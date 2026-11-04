@@ -4,6 +4,19 @@ import type { Project } from '../types'
 // TODO: 替换为你自己的项目
 export const projects: Project[] = [
   {
+    id: 'mobius',
+    name: '莫比乌斯环',
+    description: '用原生 WebGL 实时渲染的莫比乌斯环：拖动旋转、滚轮缩放，可切换半扭转数、带宽与结构线。',
+    tags: ['WebGL', 'GLSL', 'JavaScript'],
+    demo: `${import.meta.env.BASE_URL}mobius.html`,
+    status: '已完成',
+    highlights: [
+      '手写顶点/片元着色器，无第三方 3D 渲染库',
+      '解析法线 + 双面光照，处理不可定向曲面的接缝',
+      '边界光点沿单一边界巡游，直观展示单侧曲面',
+    ],
+  },
+  {
     id: 'personal-site',
     name: '个人博客与作品集',
     description: '你用来自我介绍的门面站点：Markdown 写文章，自动生成列表，深浅色主题切换。',
