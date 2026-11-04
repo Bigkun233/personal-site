@@ -1,0 +1,1545 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Möbius · 莫比乌斯环</title>
+<style>
+  :root {
+    --ink: #05070a;
+    --paper: #f3efe4;
+    --muted: rgba(243, 239, 228, .52);
+    --faint: rgba(243, 239, 228, .30);
+    --line: rgba(243, 239, 228, .12);
+    --accent: #c9f56a;
+    --accent-rgb: 201, 245, 106;
+    --amber: #f0bf78;
+    --dock: rgba(13, 17, 22, .68);
+    --sans: "Inter", "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Songti SC", "STSong", serif;
+    --mono: "SFMono-Regular", "Cascadia Mono", "Roboto Mono", Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--ink);
+  }
+
+  body {
+    overflow: hidden;
+    color: var(--paper);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background:
+      radial-gradient(120% 94% at 50% 40%, #0e1a1e 0%, #090d12 36%, #05070a 70%, #030407 100%);
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    box-shadow: inset 0 0 220px 70px rgba(0, 0, 0, .62);
+  }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .scene::before,
+  .scene::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(70px);
+    will-change: transform;
+  }
+
+  .scene::before {
+    width: 62vmax;
+    height: 62vmax;
+    left: 22%;
+    top: 12%;
+    background: radial-gradient(circle, rgba(28, 112, 102, .28) 0%, rgba(17, 58, 58, .12) 45%, transparent 72%);
+    animation: drift-a 19s ease-in-out infinite alternate;
+  }
+
+  .scene::after {
+    width: 44vmax;
+    height: 44vmax;
+    right: 12%;
+    bottom: 8%;
+    background: radial-gradient(circle, rgba(166, 103, 40, .16) 0%, rgba(90, 55, 25, .06) 46%, transparent 72%);
+    animation: drift-b 23s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift-a {
+    from { transform: translate3d(-3%, -2%, 0) scale(1); }
+    to   { transform: translate3d(5%, 4%, 0) scale(1.08); }
+  }
+
+  @keyframes drift-b {
+    from { transform: translate3d(3%, 2%, 0) scale(1.05); }
+    to   { transform: translate3d(-4%, -4%, 0) scale(.96); }
+  }
+
+  #gl {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+    opacity: 0;
+    animation: canvas-in 1.4s .15s ease forwards;
+  }
+
+  #gl:active { cursor: grabbing; }
+
+  @keyframes canvas-in { to { opacity: 1; } }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    opacity: .032;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+  }
+
+  .frame {
+    position: fixed;
+    inset: 14px;
+    z-index: 6;
+    border: 1px solid rgba(243, 239, 228, .055);
+    border-radius: 22px;
+    pointer-events: none;
+  }
+
+  .masthead {
+    position: fixed;
+    top: clamp(28px, 5vw, 58px);
+    left: clamp(24px, 5vw, 66px);
+    z-index: 10;
+    pointer-events: none;
+    animation: rise .95s .05s cubic-bezier(.2, .75, .2, 1) both;
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow .pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), .9);
+    animation: pulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: .45; transform: scale(.8); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+
+  h1 {
+    margin: 18px 0 12px;
+    font-family: var(--serif);
+    font-size: clamp(58px, 7.2vw, 104px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: .82;
+    letter-spacing: -.045em;
+    text-shadow: 0 18px 60px rgba(0, 0, 0, .45);
+  }
+
+  h1 .dot {
+    display: inline-block;
+    margin-left: .04em;
+    color: var(--accent);
+    font-size: .32em;
+    font-style: normal;
+    transform: translateY(-.58em);
+    text-shadow: 0 0 26px rgba(var(--accent-rgb), .6);
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: .12em;
+    line-height: 1.8;
+  }
+
+  .sub b {
+    color: rgba(243, 239, 228, .86);
+    font-weight: 500;
+  }
+
+  .readout {
+    position: fixed;
+    top: clamp(30px, 5vw, 60px);
+    right: clamp(24px, 5vw, 66px);
+    z-index: 10;
+    width: 252px;
+    text-align: right;
+    pointer-events: none;
+    animation: rise .95s .18s cubic-bezier(.2, .75, .2, 1) both;
+  }
+
+  .cap {
+    color: var(--faint);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: .38em;
+    text-transform: uppercase;
+  }
+
+  .state {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 14px;
+    font-size: 13px;
+    letter-spacing: .2em;
+  }
+
+  .state .led {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), .8);
+  }
+
+  .boundary {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: -4px;
+  }
+
+  .boundary strong {
+    color: var(--accent);
+    font-family: var(--serif);
+    font-size: 66px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -.04em;
+    transition: color .35s ease;
+  }
+
+  .boundary span {
+    max-width: 72px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .14em;
+    line-height: 1.55;
+    text-align: left;
+  }
+
+  .twist-line {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .1em;
+  }
+
+  .travel {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    margin-top: 8px;
+    color: var(--faint);
+    font-size: 9px;
+    letter-spacing: .12em;
+  }
+
+  .travel .spark {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px rgba(240, 191, 120, .9);
+  }
+
+  .formula {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    color: rgba(243, 239, 228, .36);
+    font-family: var(--mono);
+    font-size: 8px;
+    line-height: 1.9;
+    letter-spacing: .02em;
+  }
+
+  .formula span { display: block; }
+
+  .hint {
+    margin-top: 14px;
+    color: var(--faint);
+    font-size: 8px;
+    letter-spacing: .16em;
+  }
+
+  .mobile-only { display: none; }
+
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(18px, 3.4vh, 34px);
+    z-index: 12;
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, .92fr) auto;
+    gap: 26px;
+    align-items: end;
+    width: min(880px, calc(100vw - 32px));
+    padding: 16px 18px 15px;
+    border: 1px solid rgba(243, 239, 228, .1);
+    border-radius: 18px;
+    background:
+      linear-gradient(180deg, rgba(22, 27, 32, .72), rgba(9, 12, 16, .78));
+    box-shadow:
+      0 28px 80px rgba(0, 0, 0, .55),
+      inset 0 1px 0 rgba(255, 255, 255, .055);
+    backdrop-filter: blur(22px) saturate(1.12);
+    -webkit-backdrop-filter: blur(22px) saturate(1.12);
+    transform: translateX(-50%);
+    animation: dock-in 1s .3s cubic-bezier(.2, .75, .2, 1) both;
+  }
+
+  @keyframes dock-in {
+    from { opacity: 0; transform: translate(-50%, 18px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .control { min-width: 0; }
+
+  .control-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+
+  .control label {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .control output {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .04em;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      to right,
+      var(--accent) 0%,
+      var(--accent) var(--p, 20%),
+      rgba(243, 239, 228, .14) var(--p, 20%),
+      rgba(243, 239, 228, .14) 100%
+    );
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    margin-top: -5px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: #eae6da;
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), .08), 0 0 16px rgba(var(--accent-rgb), .4);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    transform: scale(1.14);
+    box-shadow: 0 0 0 5px rgba(var(--accent-rgb), .1), 0 0 22px rgba(var(--accent-rgb), .55);
+  }
+
+  input[type="range"]::-moz-range-track {
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(243, 239, 228, .14);
+  }
+
+  input[type="range"]::-moz-range-progress {
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: #eae6da;
+    box-shadow: 0 0 16px rgba(var(--accent-rgb), .4);
+  }
+
+  .ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -3px;
+    color: rgba(243, 239, 228, .22);
+    font-family: var(--mono);
+    font-size: 7px;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-bottom: 1px;
+  }
+
+  .btn {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .025);
+    color: rgba(243, 239, 228, .66);
+    font: inherit;
+    font-size: 9px;
+    letter-spacing: .14em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+
+  .btn .led {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(243, 239, 228, .22);
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+
+  .btn:hover {
+    color: var(--paper);
+    border-color: rgba(243, 239, 228, .24);
+    transform: translateY(-1px);
+  }
+
+  .btn:active { transform: translateY(0); }
+
+  .btn:focus-visible {
+    outline: 2px solid rgba(var(--accent-rgb), .7);
+    outline-offset: 2px;
+  }
+
+  .btn.is-on {
+    color: var(--paper);
+    border-color: rgba(var(--accent-rgb), .34);
+    background: rgba(var(--accent-rgb), .075);
+  }
+
+  .btn.is-on .led {
+    background: var(--accent);
+    box-shadow: 0 0 9px rgba(var(--accent-rgb), .8);
+  }
+
+  .btn.reset {
+    color: rgba(243, 239, 228, .5);
+    padding-inline: 13px;
+  }
+
+  .fallback {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: none;
+    place-items: center;
+    padding: 32px;
+    background: rgba(5, 7, 10, .92);
+    text-align: center;
+  }
+
+  .fallback.show { display: grid; }
+
+  .fallback div { max-width: 420px; }
+
+  .fallback h2 {
+    margin: 0 0 10px;
+    font-family: var(--serif);
+    font-size: 42px;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .fallback p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 1280px) {
+    .readout .formula,
+    .readout .travel,
+    .readout .hint { display: none; }
+  }
+
+  @media (max-width: 860px) {
+    .readout {
+      top: auto;
+      right: auto;
+      bottom: 176px;
+      left: clamp(20px, 5vw, 40px);
+      width: auto;
+      text-align: left;
+    }
+
+    .readout .cap,
+    .readout .formula,
+    .readout .travel { display: none; }
+
+    .readout .hint {
+      display: block;
+      margin-top: 11px;
+      font-size: 8px;
+      letter-spacing: .12em;
+    }
+
+    .desktop-break { display: none; }
+    .desktop-only { display: none; }
+    .mobile-only { display: inline; }
+
+    .readout .state { justify-content: flex-start; margin-top: 0; }
+    .readout .boundary { justify-content: flex-start; gap: 9px; }
+
+    .boundary strong { font-size: 34px; }
+    .boundary span { max-width: none; font-size: 8px; line-height: 1.4; }
+    .twist-line { margin-top: 6px; }
+
+    .dock {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px 18px;
+      padding: 14px 15px;
+    }
+
+    .buttons {
+      grid-column: 1 / -1;
+      justify-content: space-between;
+      padding-top: 1px;
+    }
+
+    .btn { flex: 1; justify-content: center; }
+    .hint { display: none; }
+  }
+
+  @media (max-width: 560px) {
+    .masthead { top: 24px; left: 20px; }
+    h1 { font-size: 54px; margin-top: 14px; }
+    .sub { max-width: 250px; font-size: 10px; line-height: 1.7; }
+    .frame { inset: 8px; border-radius: 16px; }
+    .readout { bottom: 188px; left: 20px; }
+    .dock { bottom: 10px; width: calc(100vw - 20px); border-radius: 16px; }
+    .control label { font-size: 8px; letter-spacing: .16em; }
+    .control output { font-size: 9px; }
+    .btn { padding: 8px 9px; font-size: 8px; letter-spacing: .1em; }
+  }
+
+  /* 矮屏手机：把读数压成一行，避免压到曲面上 */
+  @media (max-width: 860px) and (max-height: 650px) {
+    .readout {
+      bottom: 128px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .readout .state { font-size: 10px; }
+    .readout .boundary { margin-top: 0; gap: 7px; }
+    .readout .boundary strong { font-size: 24px; line-height: 1; }
+    .readout .boundary span { font-size: 8px; line-height: 1.3; }
+
+    .readout .twist-line,
+    .readout .hint { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scene::before,
+    .scene::after,
+    .eyebrow .pulse { animation: none; }
+    #gl, .masthead, .readout, .dock { animation-duration: .01s; }
+  }
+</style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <canvas id="gl"></canvas>
+  </div>
+
+  <svg class="noise" aria-hidden="true">
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#grain)"/>
+  </svg>
+
+  <div class="frame" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <div class="eyebrow"><span class="pulse"></span>Topology / 001</div>
+    <h1>Möbius<span class="dot">.</span></h1>
+    <p class="sub"><b>莫比乌斯环</b> —— 只有一个面，<br>只有一条边界。</p>
+  </header>
+
+  <aside class="readout" aria-live="polite">
+    <div class="cap">Topological readout</div>
+    <div class="state"><span class="led"></span><span id="sidedness">单侧曲面</span></div>
+    <div class="boundary"><strong id="boundaryCount">1</strong><span>条<br class="desktop-break">连续边界</span></div>
+    <p class="twist-line" id="twistLine">k = 1 · 180°</p>
+    <div class="travel"><span class="spark"></span><span id="travelText">光点沿唯一边界巡游</span></div>
+    <div class="formula" aria-hidden="true">
+      <span>x = (R + v·cos(k u / 2))·cos u</span>
+      <span>y = v·sin(k u / 2)</span>
+      <span>z = (R + v·cos(k u / 2))·sin u</span>
+    </div>
+    <p class="hint"><span class="desktop-only">拖动旋转 · 滚轮缩放 · 双击复位</span><span class="mobile-only">拖动旋转 · 双指缩放 · 双击复位</span></p>
+  </aside>
+
+  <section class="dock" aria-label="莫比乌斯环控制面板">
+    <div class="control">
+      <div class="control-head">
+        <label for="twist">半扭转数</label>
+        <output id="twistOut" for="twist">1</output>
+      </div>
+      <input id="twist" type="range" min="1" max="5" step="1" value="1" aria-label="半扭转数">
+      <div class="ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+    </div>
+
+    <div class="control">
+      <div class="control-head">
+        <label for="width">带宽</label>
+        <output id="widthOut" for="width">0.42</output>
+      </div>
+      <input id="width" type="range" min="0.18" max="0.62" step="0.01" value="0.42" aria-label="带宽">
+      <div class="ticks"><span>窄</span><span>宽</span></div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn is-on" id="spinBtn" type="button" aria-pressed="true"><span class="led"></span>自转</button>
+      <button class="btn is-on" id="gridBtn" type="button" aria-pressed="true"><span class="led"></span>结构线</button>
+      <button class="btn reset" id="resetBtn" type="button">复位</button>
+    </div>
+  </section>
+
+  <div class="fallback" id="fallback">
+    <div>
+      <h2>Möbius</h2>
+      <p id="fallbackText">当前浏览器没有可用的 WebGL。请开启硬件加速，或改用最新版 Chrome / Edge / Safari 打开。</p>
+    </div>
+  </div>
+
+<script>
+(() => {
+  "use strict";
+
+  const TAU = Math.PI * 2;
+  const R = 1.6;
+
+  const canvas = document.getElementById("gl");
+  const fallback = document.getElementById("fallback");
+  const fallbackText = document.getElementById("fallbackText");
+  const sidednessEl = document.getElementById("sidedness");
+  const boundaryCountEl = document.getElementById("boundaryCount");
+  const twistLineEl = document.getElementById("twistLine");
+  const travelTextEl = document.getElementById("travelText");
+
+  const twistInput = document.getElementById("twist");
+  const widthInput = document.getElementById("width");
+  const twistOut = document.getElementById("twistOut");
+  const widthOut = document.getElementById("widthOut");
+  const spinBtn = document.getElementById("spinBtn");
+  const gridBtn = document.getElementById("gridBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const params = new URLSearchParams(window.location.search);
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const reducedMotion = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
+  const initialK = clamp(Math.round(Number(params.get("k")) || 1), 1, 5);
+  const initialWidth = clamp(Number(params.get("w")) || 0.42, 0.18, 0.62);
+  const portrait = window.innerHeight > window.innerWidth * 1.25;
+  const initialYaw = Number(params.get("yaw") ?? (portrait ? -0.52 : -0.36));
+  const initialPitch = clamp(Number(params.get("pitch") ?? (portrait ? 0.82 : 0.54)), -0.18, 1.42);
+  const initialZoom = clamp(Number(params.get("zoom")) || (portrait ? 1.05 : 1), 0.62, 2.15);
+
+  const state = {
+    k: initialK,
+    width: initialWidth,
+    grid: params.get("grid") === "0" ? 0 : 1,
+    spin: params.get("spin") !== "0" && !reducedMotion,
+    yaw: initialYaw,
+    pitch: initialPitch,
+    targetYaw: initialYaw,
+    targetPitch: initialPitch,
+    zoom: initialZoom,
+    targetZoom: initialZoom,
+    markerU: 0,
+    dragging: false,
+    lastX: 0,
+    lastY: 0,
+    lastTime: 0
+  };
+
+  const gl = canvas.getContext("webgl", {
+    alpha: true,
+    antialias: true,
+    depth: true,
+    premultipliedAlpha: true,
+    preserveDrawingBuffer: false,
+    powerPreference: "high-performance"
+  });
+
+  if (!gl) {
+    fallback.classList.add("show");
+    return;
+  }
+
+  const derivExt = gl.getExtension("OES_standard_derivatives");
+  if (!derivExt) {
+    fallbackText.textContent = "当前设备缺少 WebGL 导数扩展，无法绘制结构线。请更新浏览器后重试。";
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 矩阵工具（列主序，直接传给 WebGL）                                   */
+  /* ------------------------------------------------------------------ */
+
+  function mat4Multiply(a, b) {
+    const out = new Float32Array(16);
+    for (let c = 0; c < 4; c++) {
+      for (let r = 0; r < 4; r++) {
+        out[c * 4 + r] =
+          a[r] * b[c * 4] +
+          a[4 + r] * b[c * 4 + 1] +
+          a[8 + r] * b[c * 4 + 2] +
+          a[12 + r] * b[c * 4 + 3];
+      }
+    }
+    return out;
+  }
+
+  function mat4Perspective(fovy, aspect, near, far) {
+    const f = 1 / Math.tan(fovy / 2);
+    const nf = 1 / (near - far);
+    return new Float32Array([
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (far + near) * nf, -1,
+      0, 0, 2 * far * near * nf, 0
+    ]);
+  }
+
+  function mat4Translation(x, y, z) {
+    return new Float32Array([
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      x, y, z, 1
+    ]);
+  }
+
+  function mat4RotationX(a) {
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    return new Float32Array([
+      1, 0, 0, 0,
+      0, c, s, 0,
+      0, -s, c, 0,
+      0, 0, 0, 1
+    ]);
+  }
+
+  function mat4RotationY(a) {
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    return new Float32Array([
+      c, 0, -s, 0,
+      0, 1, 0, 0,
+      s, 0, c, 0,
+      0, 0, 0, 1
+    ]);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 参数曲面                                                            */
+  /*   u ∈ [0, 2π]，v ∈ [-w, w]，k 为半扭转数                            */
+  /*   P = ((R + v cos(ku/2)) cos u, v sin(ku/2),                         */
+  /*        (R + v cos(ku/2)) sin u)                                     */
+  /* ------------------------------------------------------------------ */
+
+  function surfacePoint(u, v, k) {
+    const a = k * u * 0.5;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    const r = R + v * ca;
+    return [r * Math.cos(u), v * sa, r * Math.sin(u)];
+  }
+
+  function surfaceNormal(u, v, k) {
+    const a = k * u * 0.5;
+    const ca = Math.cos(a);
+    const sa = Math.sin(a);
+    const r = R + v * ca;
+    const ru = -v * (k * 0.5) * sa;
+
+    // ∂P/∂u
+    const pu = [
+      ru * Math.cos(u) - r * Math.sin(u),
+      v * (k * 0.5) * ca,
+      ru * Math.sin(u) + r * Math.cos(u)
+    ];
+    // ∂P/∂v
+    const pv = [
+      ca * Math.cos(u),
+      sa,
+      ca * Math.sin(u)
+    ];
+
+    let nx = pu[1] * pv[2] - pu[2] * pv[1];
+    let ny = pu[2] * pv[0] - pu[0] * pv[2];
+    let nz = pu[0] * pv[1] - pu[1] * pv[0];
+    const len = Math.hypot(nx, ny, nz) || 1;
+    nx /= len;
+    ny /= len;
+    nz /= len;
+    return [nx, ny, nz];
+  }
+
+  function buildGeometry(k, halfWidth) {
+    const uSeg = 320;
+    const vSeg = 12;
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+
+    for (let i = 0; i <= uSeg; i++) {
+      const u = (i / uSeg) * TAU;
+      for (let j = 0; j <= vSeg; j++) {
+        const t = (j / vSeg) * 2 - 1;
+        const v = t * halfWidth;
+        const p = surfacePoint(u, v, k);
+        const n = surfaceNormal(u, v, k);
+
+        positions.push(p[0], p[1], p[2]);
+        normals.push(n[0], n[1], n[2]);
+
+        // 用 |t| 作为横向 UV：接缝处 v → -v 时纹理仍然连续
+        uvs.push(i / uSeg, Math.abs(t));
+      }
+    }
+
+    const row = vSeg + 1;
+    for (let i = 0; i < uSeg; i++) {
+      for (let j = 0; j < vSeg; j++) {
+        const a = i * row + j;
+        const b = a + row;
+        const c = a + 1;
+        const d = b + 1;
+        indices.push(a, c, b, c, d, b);
+      }
+    }
+
+    return {
+      positions: new Float32Array(positions),
+      normals: new Float32Array(normals),
+      uvs: new Float32Array(uvs),
+      indices: new Uint16Array(indices),
+      indexCount: indices.length
+    };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 着色器                                                              */
+  /* ------------------------------------------------------------------ */
+
+  const surfaceVS = `
+    attribute vec3 aPosition;
+    attribute vec3 aNormal;
+    attribute vec2 aUV;
+
+    uniform mat4 uMVP;
+    uniform mat4 uModel;
+
+    varying vec3 vNormal;
+    varying vec3 vWorld;
+    varying vec2 vUV;
+
+    void main() {
+      vec4 world = uModel * vec4(aPosition, 1.0);
+      vWorld = world.xyz;
+      vNormal = mat3(uModel) * aNormal;
+      vUV = aUV;
+      gl_Position = uMVP * vec4(aPosition, 1.0);
+    }
+  `;
+
+  const surfaceFS = `
+    #extension GL_OES_standard_derivatives : enable
+    precision highp float;
+
+    varying vec3 vNormal;
+    varying vec3 vWorld;
+    varying vec2 vUV;
+
+    uniform vec3 uEye;
+    uniform float uGrid;
+
+    vec2 gridLine(vec2 uv, vec2 count) {
+      vec2 coord = uv * count;
+      vec2 w = max(fwidth(coord), vec2(0.0001));
+      vec2 g = abs(fract(coord - 0.5) - 0.5) / w;
+      return 1.0 - min(g, vec2(1.0));
+    }
+
+    void main() {
+      vec3 N = normalize(vNormal);
+      vec3 V = normalize(uEye - vWorld);
+
+      // 双面材质：把法线翻到朝向观察者的一侧。
+      // 莫比乌斯环不可定向，但这样得到的光照在接缝处是连续的。
+      vec3 Nf = dot(N, V) < 0.0 ? -N : N;
+
+      float ndv = clamp(abs(dot(N, V)), 0.0, 1.0);
+      float fres = pow(1.0 - ndv, 3.0);
+
+      // 深青绿 → 青铜琥珀的连续色带。
+      // sweep 绕环一周变化一次，让同一个曲面在不同角度呈现两种金属色泽。
+      float sweep = 0.5 + 0.5 * sin(vUV.x * 6.2831853 + 0.55 + 0.28 * sin(vUV.y * 3.1415926));
+      vec3 base = mix(vec3(0.010, 0.052, 0.055), vec3(0.016, 0.195, 0.178),
+                      smoothstep(0.0, 0.62, sweep));
+      base = mix(base, vec3(0.30, 0.235, 0.105), smoothstep(0.38, 0.84, sweep) * 0.58);
+      base = mix(base, vec3(0.72, 0.365, 0.095), smoothstep(0.62, 1.0, sweep) * 0.82);
+
+      // 掠射角下的冷色珠光，避免整体偏黄
+      base = mix(base, vec3(0.045, 0.42, 0.38), fres * 0.38);
+
+      vec3 L1 = normalize(vec3(-0.60, 1.00, 0.72));
+      vec3 L2 = normalize(vec3(0.86, -0.28, 0.52));
+      float key = max(dot(Nf, L1), 0.0);
+      float fill = max(dot(Nf, L2), 0.0);
+
+      vec3 H1 = normalize(L1 + V);
+      vec3 H2 = normalize(L2 + V);
+      float spec = pow(max(dot(Nf, H1), 0.0), 140.0);
+      float spec2 = pow(max(dot(Nf, H2), 0.0), 20.0);
+
+      // 方向光 + 暗部环境光，保留金属的明暗反差
+      vec3 col = base * (0.115 + 1.18 * key + 0.30 * fill);
+      col += vec3(1.0, 0.80, 0.52) * spec * 0.82;
+      col += vec3(0.24, 0.92, 0.82) * spec2 * 0.09;
+
+      // 背面轮廓光，把暗侧从背景里托出来
+      vec3 back = normalize(vec3(-0.75, 0.50, -0.65));
+      float backRim = pow(1.0 - max(dot(Nf, back), 0.0), 4.0);
+      col += vec3(0.10, 0.42, 0.38) * backRim * fres * 0.85;
+
+      // 模拟摄影棚的冷暖反射：朝上的面偏冷，朝下的面偏暖
+      float up = clamp(Nf.y * 0.5 + 0.5, 0.0, 1.0);
+      col += mix(vec3(0.055, 0.026, 0.012), vec3(0.028, 0.105, 0.098), up) * (0.55 + 0.65 * fres);
+
+      // 边缘微光，强调“没有厚度”的纸带边缘
+      float edge = smoothstep(0.89, 0.997, vUV.y);
+      col = mix(col, vec3(0.88, 0.60, 0.27), edge * 0.36);
+      col += vec3(0.95, 0.57, 0.24) * pow(edge, 6.0) * 0.24;
+
+      // 极细的结构线：纵向为主、横向为辅，帮助读出扭转
+      vec2 line = gridLine(vUV, vec2(48.0, 4.0));
+      float lines = line.x * 0.072 + line.y * 0.022;
+      col = mix(col, vec3(0.72, 0.90, 0.82), lines * uGrid);
+
+      // 轻微的高光压缩，避免过曝
+      col = vec3(1.0) - exp(-col * 1.55);
+      col = pow(col, vec3(0.90));
+
+      // 1/255 的抖动，消除暗部色带
+      float dither = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+      col += (dither - 0.5) / 255.0;
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const markerVS = `
+    attribute vec3 aPosition;
+    attribute float aScale;
+    attribute float aAlpha;
+
+    uniform mat4 uMVP;
+    uniform float uDpr;
+
+    varying float vAlpha;
+
+    void main() {
+      gl_Position = uMVP * vec4(aPosition, 1.0);
+      gl_PointSize = clamp(aScale * 205.0 * uDpr / max(gl_Position.w, 0.001), 1.0, 72.0);
+      vAlpha = aAlpha;
+    }
+  `;
+
+  const markerFS = `
+    precision mediump float;
+
+    uniform vec3 uColor;
+    varying float vAlpha;
+
+    void main() {
+      vec2 p = gl_PointCoord - 0.5;
+      float d = length(p);
+      if (d > 0.5) discard;
+
+      float halo = smoothstep(0.5, 0.0, d);
+      halo = pow(halo, 2.3);
+
+      float core = smoothstep(0.14, 0.0, d);
+      vec3 col = mix(uColor, vec3(1.0), core * 0.92);
+
+      gl_FragColor = vec4(col * halo, halo * vAlpha);
+    }
+  `;
+
+  function compileShader(type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const info = gl.getShaderInfoLog(shader);
+      gl.deleteShader(shader);
+      throw new Error("Shader compile error: " + info);
+    }
+    return shader;
+  }
+
+  function createProgram(vsSource, fsSource) {
+    const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+    const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      const info = gl.getProgramInfoLog(program);
+      gl.deleteProgram(program);
+      throw new Error("Program link error: " + info);
+    }
+    return program;
+  }
+
+  let surfaceProgram;
+  let markerProgram;
+
+  try {
+    surfaceProgram = createProgram(surfaceVS, surfaceFS);
+    markerProgram = createProgram(markerVS, markerFS);
+  } catch (err) {
+    console.error(err);
+    fallback.classList.add("show");
+    fallbackText.textContent = "WebGL 着色器初始化失败：" + err.message;
+    return;
+  }
+
+  const surfaceLoc = {
+    aPosition: gl.getAttribLocation(surfaceProgram, "aPosition"),
+    aNormal: gl.getAttribLocation(surfaceProgram, "aNormal"),
+    aUV: gl.getAttribLocation(surfaceProgram, "aUV"),
+    uMVP: gl.getUniformLocation(surfaceProgram, "uMVP"),
+    uModel: gl.getUniformLocation(surfaceProgram, "uModel"),
+    uEye: gl.getUniformLocation(surfaceProgram, "uEye"),
+    uGrid: gl.getUniformLocation(surfaceProgram, "uGrid")
+  };
+
+  const markerLoc = {
+    aPosition: gl.getAttribLocation(markerProgram, "aPosition"),
+    aScale: gl.getAttribLocation(markerProgram, "aScale"),
+    aAlpha: gl.getAttribLocation(markerProgram, "aAlpha"),
+    uMVP: gl.getUniformLocation(markerProgram, "uMVP"),
+    uDpr: gl.getUniformLocation(markerProgram, "uDpr"),
+    uColor: gl.getUniformLocation(markerProgram, "uColor")
+  };
+
+  const surfaceBuffer = gl.createBuffer();
+  const normalBuffer = gl.createBuffer();
+  const uvBuffer = gl.createBuffer();
+  const indexBuffer = gl.createBuffer();
+  const markerBuffer = gl.createBuffer();
+
+  let geometry = null;
+
+  function uploadGeometry() {
+    const halfWidth = state.width;
+    geometry = buildGeometry(state.k, halfWidth);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, surfaceBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, geometry.positions, gl.STATIC_DRAW);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, geometry.normals, gl.STATIC_DRAW);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, geometry.uvs, gl.STATIC_DRAW);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geometry.indices, gl.STATIC_DRAW);
+
+    updateReadout();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 界面同步                                                            */
+  /* ------------------------------------------------------------------ */
+
+  function updateRangeFill(input) {
+    const min = Number(input.min);
+    const max = Number(input.max);
+    const p = ((Number(input.value) - min) / (max - min)) * 100;
+    input.style.setProperty("--p", p + "%");
+  }
+
+  function updateReadout() {
+    const odd = state.k % 2 === 1;
+    const degrees = state.k * 180;
+
+    sidednessEl.textContent = odd ? "单侧曲面" : "双侧曲面";
+    boundaryCountEl.textContent = odd ? "1" : "2";
+    twistLineEl.textContent = `k = ${state.k} · ${degrees}°`;
+    travelTextEl.textContent = odd ? "光点沿唯一边界巡游" : "两个光点分属两条边界";
+    twistOut.textContent = String(state.k);
+    widthOut.textContent = state.width.toFixed(2);
+
+    boundaryCountEl.style.color = odd ? "var(--accent)" : "#8fd8ff";
+    document.documentElement.style.setProperty("--accent", odd ? "#c9f56a" : "#8fd8ff");
+    document.documentElement.style.setProperty("--accent-rgb", odd ? "201, 245, 106" : "143, 216, 255");
+  }
+
+  function syncControls() {
+    twistInput.value = String(state.k);
+    widthInput.value = String(state.width);
+    updateRangeFill(twistInput);
+    updateRangeFill(widthInput);
+    spinBtn.classList.toggle("is-on", state.spin);
+    spinBtn.setAttribute("aria-pressed", String(state.spin));
+    gridBtn.classList.toggle("is-on", state.grid > 0.5);
+    gridBtn.setAttribute("aria-pressed", String(state.grid > 0.5));
+  }
+
+  twistInput.addEventListener("input", () => {
+    state.k = Number(twistInput.value);
+    updateRangeFill(twistInput);
+    uploadGeometry();
+  });
+
+  widthInput.addEventListener("input", () => {
+    state.width = Number(widthInput.value);
+    updateRangeFill(widthInput);
+    uploadGeometry();
+  });
+
+  spinBtn.addEventListener("click", () => {
+    state.spin = !state.spin;
+    syncControls();
+  });
+
+  gridBtn.addEventListener("click", () => {
+    state.grid = state.grid > 0.5 ? 0 : 1;
+    syncControls();
+  });
+
+  resetBtn.addEventListener("click", resetView);
+
+  function resetView() {
+    state.targetYaw = initialYaw;
+    state.targetPitch = initialPitch;
+    state.targetZoom = initialZoom;
+    state.spin = true;
+    syncControls();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 指针交互                                                            */
+  /* ------------------------------------------------------------------ */
+
+  const pointers = new Map();
+  let pinchStartDistance = 0;
+  let pinchStartZoom = 1;
+
+  function pointerDistance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  canvas.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    canvas.setPointerCapture(e.pointerId);
+    canvas.style.cursor = "grabbing";
+
+    if (pointers.size === 1) {
+      state.dragging = true;
+      state.lastX = e.clientX;
+      state.lastY = e.clientY;
+    } else if (pointers.size === 2) {
+      // 双指手势：以两指初始距离为基准缩放，不触发旋转
+      state.dragging = false;
+      const pair = [...pointers.values()];
+      pinchStartDistance = Math.max(1, pointerDistance(pair[0], pair[1]));
+      pinchStartZoom = state.targetZoom;
+    }
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!pointers.has(e.pointerId)) return;
+
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size >= 2) {
+      const pair = [...pointers.values()];
+      const distance = pointerDistance(pair[0], pair[1]);
+      state.targetZoom = Math.max(
+        0.62,
+        Math.min(2.15, pinchStartZoom * (distance / pinchStartDistance))
+      );
+      return;
+    }
+
+    if (!state.dragging) return;
+
+    const dx = e.clientX - state.lastX;
+    const dy = e.clientY - state.lastY;
+    state.lastX = e.clientX;
+    state.lastY = e.clientY;
+
+    state.targetYaw += dx * 0.0062;
+    state.targetPitch = Math.max(-0.18, Math.min(1.42, state.targetPitch + dy * 0.0052));
+  });
+
+  function endDrag(e) {
+    if (!pointers.has(e.pointerId)) return;
+
+    pointers.delete(e.pointerId);
+    if (canvas.hasPointerCapture(e.pointerId)) {
+      canvas.releasePointerCapture(e.pointerId);
+    }
+
+    if (pointers.size === 1) {
+      const remaining = [...pointers.values()][0];
+      state.dragging = true;
+      state.lastX = remaining.x;
+      state.lastY = remaining.y;
+    } else if (pointers.size === 0) {
+      state.dragging = false;
+      canvas.style.cursor = "grab";
+    }
+  }
+
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("pointerleave", (e) => {
+    if (e.pointerType === "mouse" && e.buttons === 0) endDrag(e);
+  });
+
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    state.targetZoom = Math.max(0.62, Math.min(2.15, state.targetZoom * Math.exp(-e.deltaY * 0.0011)));
+  }, { passive: false });
+
+  canvas.addEventListener("dblclick", resetView);
+
+  window.addEventListener("keydown", (e) => {
+    const tag = e.target && e.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "BUTTON") return;
+
+    if (e.code === "Space") {
+      e.preventDefault();
+      state.spin = !state.spin;
+      syncControls();
+    } else if (e.key === "r" || e.key === "R") {
+      resetView();
+    } else if (e.key === "g" || e.key === "G") {
+      state.grid = state.grid > 0.5 ? 0 : 1;
+      syncControls();
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* 尺寸与相机                                                          */
+  /* ------------------------------------------------------------------ */
+
+  let viewW = 0;
+  let viewH = 0;
+  let dpr = 1;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(rect.width * dpr));
+    const h = Math.max(1, Math.round(rect.height * dpr));
+    if (w === canvas.width && h === canvas.height) return;
+    canvas.width = w;
+    canvas.height = h;
+    viewW = w;
+    viewH = h;
+    gl.viewport(0, 0, w, h);
+  }
+
+  function cameraDistance() {
+    const aspect = Math.max(0.35, canvas.clientWidth / Math.max(1, canvas.clientHeight));
+    const fov = 38 * Math.PI / 180;
+    const fitWidth = 2.30 / (Math.tan(fov / 2) * aspect);
+    return Math.max(6.55, fitWidth) / state.zoom;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 边界光点                                                            */
+  /* ------------------------------------------------------------------ */
+
+  const MAX_MARKERS = 40;
+  const markerData = new Float32Array(MAX_MARKERS * 5);
+  let markerCount = 0;
+
+  function pushMarker(p, scale, alpha) {
+    if (markerCount >= MAX_MARKERS) return;
+    const o = markerCount * 5;
+    markerData[o] = p[0];
+    markerData[o + 1] = p[1];
+    markerData[o + 2] = p[2];
+    markerData[o + 3] = scale;
+    markerData[o + 4] = alpha;
+    markerCount++;
+  }
+
+  function buildMarkers() {
+    markerCount = 0;
+    const odd = state.k % 2 === 1;
+    const vEdge = state.width + 0.018;
+    const base = state.markerU;
+    const span = odd ? TAU * 2 : TAU;
+
+    if (odd) {
+      // 奇数个半扭转：只有一条边界。u 需要走满 4π 才回到起点。
+      const headU = base % span;
+      for (let j = 13; j >= 0; j--) {
+        const u = headU - j * 0.055;
+        const p = surfacePoint(u, vEdge, state.k);
+        const t = 1 - j / 14;
+        pushMarker(p, 0.22 + 0.72 * t * t, Math.pow(t, 2.6) * 0.50);
+      }
+      pushMarker(surfacePoint(headU, vEdge, state.k), 1.0, 1.0);
+    } else {
+      // 偶数个半扭转：两条独立边界，各放一个光点。
+      const headU = base % span;
+      for (let side = -1; side <= 1; side += 2) {
+        const edgeV = side * vEdge;
+        for (let j = 6; j >= 0; j--) {
+          const u = headU - j * 0.07;
+          const p = surfacePoint(u, edgeV, state.k);
+          const t = 1 - j / 7;
+          pushMarker(p, 0.2 + 0.65 * t * t, Math.pow(t, 2.8) * 0.34);
+        }
+        pushMarker(surfacePoint(headU, edgeV, state.k), 0.86, 0.82);
+      }
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, markerBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, markerData.subarray(0, markerCount * 5), gl.DYNAMIC_DRAW);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 渲染                                                                */
+  /* ------------------------------------------------------------------ */
+
+  function bindSurfaceAttributes() {
+    gl.bindBuffer(gl.ARRAY_BUFFER, surfaceBuffer);
+    gl.enableVertexAttribArray(surfaceLoc.aPosition);
+    gl.vertexAttribPointer(surfaceLoc.aPosition, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.enableVertexAttribArray(surfaceLoc.aNormal);
+    gl.vertexAttribPointer(surfaceLoc.aNormal, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.enableVertexAttribArray(surfaceLoc.aUV);
+    gl.vertexAttribPointer(surfaceLoc.aUV, 2, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  }
+
+  function bindMarkerAttributes() {
+    gl.bindBuffer(gl.ARRAY_BUFFER, markerBuffer);
+    const stride = 5 * 4;
+
+    gl.enableVertexAttribArray(markerLoc.aPosition);
+    gl.vertexAttribPointer(markerLoc.aPosition, 3, gl.FLOAT, false, stride, 0);
+
+    gl.enableVertexAttribArray(markerLoc.aScale);
+    gl.vertexAttribPointer(markerLoc.aScale, 1, gl.FLOAT, false, stride, 12);
+
+    gl.enableVertexAttribArray(markerLoc.aAlpha);
+    gl.vertexAttribPointer(markerLoc.aAlpha, 1, gl.FLOAT, false, stride, 16);
+  }
+
+  function frame(now) {
+    resize();
+
+    const t = now * 0.001;
+    const dt = state.lastTime ? Math.min(0.05, t - state.lastTime) : 0.016;
+    state.lastTime = t;
+
+    if (!state.dragging && state.spin) {
+      state.targetYaw += dt * 0.17;
+    }
+
+    const ease = 1 - Math.exp(-dt * 8.5);
+    state.yaw += (state.targetYaw - state.yaw) * ease;
+    state.pitch += (state.targetPitch - state.pitch) * ease;
+    state.zoom += (state.targetZoom - state.zoom) * ease;
+
+    state.markerU += dt * 0.62;
+
+    buildMarkers();
+
+    const dist = cameraDistance();
+    const model = mat4Multiply(
+      mat4Translation(0, 0.12, 0),
+      mat4Multiply(mat4RotationX(state.pitch), mat4RotationY(state.yaw))
+    );
+    const view = mat4Translation(0, 0, -dist);
+    const proj = mat4Perspective(
+      38 * Math.PI / 180,
+      canvas.width / Math.max(1, canvas.height),
+      0.1,
+      100
+    );
+    const mvp = mat4Multiply(proj, mat4Multiply(view, model));
+
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.disable(gl.BLEND);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.depthMask(true);
+    gl.disable(gl.CULL_FACE);
+
+    gl.useProgram(surfaceProgram);
+    gl.uniformMatrix4fv(surfaceLoc.uMVP, false, mvp);
+    gl.uniformMatrix4fv(surfaceLoc.uModel, false, model);
+    gl.uniform3f(surfaceLoc.uEye, 0, 0, dist);
+    gl.uniform1f(surfaceLoc.uGrid, state.grid);
+
+    bindSurfaceAttributes();
+    gl.drawElements(gl.TRIANGLES, geometry.indexCount, gl.UNSIGNED_SHORT, 0);
+
+    // 边界光点：加法混合，保留深度测试以产生前后遮挡
+    if (markerCount > 1) {
+      gl.useProgram(markerProgram);
+      gl.uniformMatrix4fv(markerLoc.uMVP, false, mvp);
+      gl.uniform1f(markerLoc.uDpr, dpr);
+      gl.uniform3f(markerLoc.uColor, 1.0, 0.72, 0.32);
+
+      gl.enable(gl.BLEND);
+      gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE);
+      gl.depthMask(false);
+
+      bindMarkerAttributes();
+      gl.drawArrays(gl.POINTS, 0, markerCount);
+
+      gl.depthMask(true);
+      gl.disable(gl.BLEND);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 启动                                                                */
+  /* ------------------------------------------------------------------ */
+
+  try {
+    uploadGeometry();
+    syncControls();
+    resize();
+    requestAnimationFrame(frame);
+  } catch (err) {
+    console.error(err);
+    fallback.classList.add("show");
+    fallbackText.textContent = "初始化失败：" + err.message;
+  }
+
+  window.addEventListener("resize", resize);
+  if (window.ResizeObserver) {
+    new ResizeObserver(resize).observe(canvas);
+  }
+})();
+</script>
+</body>
+</html>
