@@ -73,9 +73,9 @@ export function BlogList() {
       {filtered.length === 0 ? (
         <p className="py-16 text-center text-ink-faint dark:text-night-soft">没有找到匹配的文章。</p>
       ) : (
-        <div className="divide-y divide-line dark:divide-night-line">
-          {filtered.map((post) => (
-            <PostCard key={post.slug} post={post} />
+        <div className="post-list">
+          {filtered.map((post, i) => (
+            <PostCard key={post.slug} post={post} index={i + 1} />
           ))}
         </div>
       )}

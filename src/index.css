@@ -1,21 +1,21 @@
-/* src/index.css — 双风格：博客区=杂志编辑风 / 作品集=GitHub(Primer)风 */
+﻿/* src/index.css 鈥?鍙岄鏍硷細鍗氬鍖?鏉傚織缂栬緫椋?/ 浣滃搧闆?GitHub(Primer)椋?*/
 @import 'tailwindcss';
-/* 代码高亮：浅色用 github 主题；深色由下方 .dark 覆盖 */
+/* 浠ｇ爜楂樹寒锛氭祬鑹茬敤 github 涓婚锛涙繁鑹茬敱涓嬫柟 .dark 瑕嗙洊 */
 @import 'highlight.js/styles/github.css';
 
-/* 用 class 控制深色模式 */
+/* 鐢?class 鎺у埗娣辫壊妯″紡 */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* ============ 字体 ============ */
+  /* ============ 瀛椾綋 ============ */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
     'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
-  /* 杂志风衬线（标题用） */
+  /* 鏉傚織椋庤‖绾匡紙鏍囬鐢級 */
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Songti SC', 'STSong',
     'Noto Serif SC', 'Source Han Serif SC', serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* ============ 杂志风 token（博客区）============ */
+  /* ============ 鏉傚織椋?token锛堝崥瀹㈠尯锛?=========== */
   --color-paper: #faf8f5;
   --color-paper-2: #f3efe7;
   --color-line: #e8e2d7;
@@ -40,7 +40,7 @@
   --color-brand-800: #653518;
   --color-brand-900: #532c16;
 
-  /* ============ GitHub(Primer) token（作品集）============ */
+  /* ============ GitHub(Primer) token锛堜綔鍝侀泦锛?=========== */
   --color-canvas: #ffffff;
   --color-canvas-subtle: #f6f8fa;
   --color-bd: #d0d7de;
@@ -56,9 +56,9 @@
   --color-btn-border: rgba(31, 35, 40, 0.15);
 }
 
-/* ============ 深色：两套 token 同时切换 ============ */
+/* ============ 娣辫壊锛氫袱濂?token 鍚屾椂鍒囨崲 ============ */
 .dark {
-  /* 杂志风 */
+  /* 鏉傚織椋?*/
   --color-paper: #181512;
   --color-paper-2: #221e19;
   --color-line: #2e2922;
@@ -91,7 +91,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  /* 首页主视觉用了 100vw 出血，clip 可避免出现横向滚动条，且不影响 sticky 头部 */
+  /* 棣栭〉涓昏瑙夌敤浜?100vw 鍑鸿锛宑lip 鍙伩鍏嶅嚭鐜版í鍚戞粴鍔ㄦ潯锛屼笖涓嶅奖鍝?sticky 澶撮儴 */
   overflow-x: clip;
 }
 
@@ -103,7 +103,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* 标题统一走衬线，制造编辑式（杂志）质感 */
+/* 鏍囬缁熶竴璧拌‖绾匡紝鍒堕€犵紪杈戝紡锛堟潅蹇楋級璐ㄦ劅 */
 h1,
 h2,
 h3,
@@ -113,7 +113,7 @@ h3,
   letter-spacing: -0.01em;
 }
 
-/* GitHub 区域内的标题不继承衬线，回归系统无衬线 */
+/* GitHub 鍖哄煙鍐呯殑鏍囬涓嶇户鎵胯‖绾匡紝鍥炲綊绯荤粺鏃犺‖绾?*/
 .gh-scope h1,
 .gh-scope h2,
 .gh-scope h3 {
@@ -126,7 +126,7 @@ h3,
   color: var(--color-brand-900);
 }
 
-/* 细下划线链接（杂志风正文） */
+/* 缁嗕笅鍒掔嚎閾炬帴锛堟潅蹇楅姝ｆ枃锛?*/
 .link-underline {
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -137,7 +137,7 @@ h3,
   text-decoration-color: currentColor;
 }
 
-/* ================= 杂志风 Markdown 正文 ================= */
+/* ================= 鏉傚織椋?Markdown 姝ｆ枃 ================= */
 .prose-custom {
   font-size: 1.0625rem;
   line-height: 1.85;
@@ -274,7 +274,7 @@ h3,
   border-top: 1px solid var(--color-line);
 }
 
-/* 深色代码高亮（覆盖 github.css），两套正文通用 */
+/* 娣辫壊浠ｇ爜楂樹寒锛堣鐩?github.css锛夛紝涓ゅ姝ｆ枃閫氱敤 */
 .dark .prose-custom .hljs {
   color: #c9d1d9;
   background: transparent;
@@ -309,7 +309,7 @@ h3,
   color: #ffa657;
 }
 
-/* ================= GitHub(Primer) 风格组件（作品集）================= */
+/* ================= GitHub(Primer) 椋庢牸缁勪欢锛堜綔鍝侀泦锛?================ */
 .gh-scope {
   font-size: 14px;
   line-height: 1.5;
@@ -441,243 +441,3 @@ a.gh-title:hover {
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 30%, transparent);
 }
 
-/* ================= 首页主视觉（莫比乌斯环） ================= */
-.hero-shell {
-  min-height: calc(100svh - 4rem);
-  background: #07100f;
-}
-
-/* 左侧压暗：桌面留给文字，窄屏改为整体的柔和暗角 */
-.hero-veil {
-  background:
-    linear-gradient(
-      100deg,
-      #07100f 0%,
-      rgba(7, 16, 15, 0.95) 28%,
-      rgba(7, 16, 15, 0.66) 52%,
-      rgba(7, 16, 15, 0.14) 80%,
-      transparent 100%
-    );
-}
-
-/* 居中遮罩：四周压暗、中心留亮，用于「文字压在环上」的版式 */
-.hero-veil-center {
-  background:
-    radial-gradient(
-      ellipse 68% 62% at 60% 50%,
-      rgba(7, 16, 15, 0.06) 0%,
-      rgba(7, 16, 15, 0.42) 52%,
-      rgba(7, 16, 15, 0.86) 78%,
-      #07100f 100%
-    ),
-    linear-gradient(to bottom, rgba(7, 16, 15, 0.72), rgba(7, 16, 15, 0.18) 40%, rgba(7, 16, 15, 0.72));
-}
-
-/* 横向长带：上下压暗、中间通透，用于窄幅的横幅式主视觉 */
-.hero-veil-band {
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(7, 16, 15, 0.96) 0%,
-      rgba(7, 16, 15, 0.34) 26%,
-      rgba(7, 16, 15, 0.12) 50%,
-      rgba(7, 16, 15, 0.42) 76%,
-      rgba(7, 16, 15, 0.94) 100%
-    );
-}
-
-.hero-veil-bottom {
-  background: linear-gradient(to top, #07100f 2%, transparent 100%);
-}
-
-@media (max-width: 860px) {
-  .hero-shell {
-    min-height: 640px;
-    min-height: max(600px, calc(100svh - 4rem));
-  }
-
-  /* 窄屏：画布只占下半屏，上方留给文字 */
-  .hero-canvas {
-    top: 32%;
-  }
-
-  .hero-veil {
-    background:
-      linear-gradient(
-        to bottom,
-        #07100f 0%,
-        rgba(7, 16, 15, 0.55) 18%,
-        rgba(7, 16, 15, 0.08) 38%,
-        rgba(7, 16, 15, 0.05) 66%,
-        rgba(7, 16, 15, 0.55) 88%,
-        #07100f 100%
-      );
-  }
-
-  .hero-veil-bottom {
-    display: none;
-  }
-}
-
-.mobius-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(232, 240, 236, 0.55);
-}
-
-.mobius-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: #c9f56a;
-  box-shadow: 0 0 12px rgba(201, 245, 106, 0.85);
-  animation: mobius-pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes mobius-pulse {
-  0%,
-  100% {
-    opacity: 0.45;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
-}
-
-.mobius-title {
-  margin-top: 1.6rem;
-  font-family: var(--font-display);
-  font-size: clamp(2.1rem, 4.4vw, 3.15rem);
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: #f0f4ef;
-  text-wrap: balance;
-}
-
-.mobius-title-soft {
-  color: rgba(232, 240, 236, 0.52);
-}
-
-.mobius-lede {
-  max-width: 30rem;
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.85;
-  color: rgba(226, 236, 232, 0.72);
-}
-
-.mobius-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 2.1rem;
-}
-
-.mobius-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid rgba(232, 240, 236, 0.2);
-  border-radius: 999px;
-  padding: 0.62rem 1.25rem;
-  font-size: 0.86rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: rgba(240, 244, 239, 0.86);
-  text-decoration: none;
-  backdrop-filter: blur(6px);
-  transition: border-color 180ms, background 180ms, color 180ms, transform 180ms;
-}
-
-.mobius-btn:hover {
-  border-color: rgba(232, 240, 236, 0.42);
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-1px);
-}
-
-.mobius-btn-solid {
-  border-color: transparent;
-  background: #c9f56a;
-  color: #0a1512;
-  font-weight: 600;
-}
-
-.mobius-btn-solid:hover {
-  background: #d8ff8c;
-  color: #0a1512;
-}
-
-.mobius-note {
-  margin-top: 2.6rem;
-  max-width: 26rem;
-  font-size: 0.76rem;
-  line-height: 1.9;
-  letter-spacing: 0.01em;
-  color: rgba(226, 236, 232, 0.4);
-}
-
-.mobius-note-k {
-  margin-right: 0.5rem;
-  font-family: var(--font-mono);
-  color: #c9f56a;
-}
-
-.mobius-scroll {
-  position: absolute;
-  right: 0;
-  bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.7rem;
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.32em;
-  color: rgba(226, 236, 232, 0.35);
-}
-
-.mobius-scroll-bar {
-  width: 1px;
-  height: 44px;
-  background: linear-gradient(to bottom, rgba(201, 245, 106, 0.75), transparent);
-  animation: mobius-scroll 2.4s ease-in-out infinite;
-}
-
-@keyframes mobius-scroll {
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: scaleY(0.55);
-    transform-origin: top;
-  }
-  50% {
-    opacity: 1;
-    transform: scaleY(1);
-    transform-origin: top;
-  }
-}
-
-@media (max-width: 640px) {
-  .mobius-note,
-  .mobius-scroll {
-    display: none;
-  }
-  .mobius-title {
-    font-size: 1.95rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mobius-dot,
-  .mobius-scroll-bar {
-    animation: none;
-  }
-}

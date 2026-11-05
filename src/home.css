@@ -1,0 +1,1156 @@
+/* ============================================================
+   首页主视觉：莫比乌斯环 + 科技感 HUD
+   ============================================================ */
+
+:root {
+  --hero-bg: #050b0a;
+  --hero-ink: #eef4f0;
+  --hero-muted: rgba(226, 236, 232, 0.66);
+  --hero-faint: rgba(226, 236, 232, 0.36);
+  --hero-line: rgba(198, 240, 220, 0.12);
+  --hero-lime: #c9f56a;
+  --hero-cyan: #62e6cf;
+  --hero-amber: #f0b76a;
+}
+
+.hero-shell {
+  min-height: calc(100svh - 4rem);
+  background: var(--hero-bg);
+  isolation: isolate;
+}
+
+/* 主视觉底部的「接缝」高光线：把深色区与页面正文区利落地切开 */
+.hero-shell::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 245, 106, 0.34) 22%,
+    rgba(98, 230, 207, 0.5) 50%,
+    rgba(201, 245, 106, 0.28) 78%,
+    transparent
+  );
+  z-index: 5;
+}
+
+/* ---------- 背景层 ---------- */
+
+/* 工程网格 */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(160, 230, 205, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(160, 230, 205, 0.055) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 82% 78% at 58% 46%, #000 12%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 82% 78% at 58% 46%, #000 12%, transparent 78%);
+  opacity: 0.9;
+}
+
+/* 星点：两层错位，制造纵深 */
+.hero-stars {
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.8px, transparent 0.9px),
+    radial-gradient(circle, rgba(140, 235, 210, 0.36) 1px, transparent 1.1px);
+  background-size: 190px 190px, 320px 320px;
+  background-position: 0 0, 60px 90px;
+  opacity: 0.32;
+  animation: star-drift 90s linear infinite;
+}
+
+@keyframes star-drift {
+  to {
+    background-position: 190px 190px, 380px 410px;
+  }
+}
+
+/* 扫描线 */
+.hero-scan {
+  top: -30%;
+  height: 30%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(201, 245, 106, 0.05) 40%,
+    rgba(201, 245, 106, 0.1) 50%,
+    rgba(201, 245, 106, 0.05) 60%,
+    transparent
+  );
+  animation: scan-fall 9s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes scan-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(460%);
+    opacity: 0;
+  }
+}
+
+/* 指针聚光 */
+.hero-spot {
+  background: radial-gradient(
+    420px circle at var(--mx, 62%) var(--my, 48%),
+    rgba(120, 240, 210, 0.09),
+    transparent 68%
+  );
+  transition: background 120ms linear;
+}
+
+/* 底部渐隐 */
+.hero-veil-bottom {
+  background: linear-gradient(to top, var(--hero-bg) 2%, transparent 100%);
+}
+
+/* 左侧压暗（桌面） */
+.hero-veil {
+  background: linear-gradient(
+    100deg,
+    var(--hero-bg) 0%,
+    rgba(5, 11, 10, 0.94) 26%,
+    rgba(5, 11, 10, 0.62) 50%,
+    rgba(5, 11, 10, 0.14) 78%,
+    transparent 100%
+  );
+}
+
+.hero-veil-center {
+  background:
+    radial-gradient(
+      ellipse 66% 60% at 58% 50%,
+      rgba(5, 11, 10, 0.04) 0%,
+      rgba(5, 11, 10, 0.42) 52%,
+      rgba(5, 11, 10, 0.88) 80%,
+      var(--hero-bg) 100%
+    );
+}
+
+.hero-veil-band {
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 11, 10, 0.96) 0%,
+    rgba(5, 11, 10, 0.34) 26%,
+    rgba(5, 11, 10, 0.1) 50%,
+    rgba(5, 11, 10, 0.42) 76%,
+    rgba(5, 11, 10, 0.94) 100%
+  );
+}
+
+/* ---------- 文字 ---------- */
+
+.mobius-eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--hero-muted);
+}
+
+.mobius-eyebrow-sep {
+  width: 24px;
+  height: 1px;
+  background: var(--hero-line);
+}
+
+.mobius-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--hero-lime);
+  box-shadow: 0 0 12px rgba(201, 245, 106, 0.85);
+  animation: mobius-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes mobius-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.mobius-title {
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.05rem, 4.2vw, 3.4rem);
+  line-height: 1.16;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--hero-ink);
+  text-wrap: balance;
+}
+
+.mobius-title-grad {
+  background: linear-gradient(100deg, #ffffff 0%, #c9f56a 42%, #62e6cf 78%, #8fd8ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobius-lede {
+  max-width: 28rem;
+  margin-top: 1.4rem;
+  font-size: 0.98rem;
+  line-height: 1.9;
+  color: var(--hero-muted);
+}
+
+/* ---------- 按钮 ---------- */
+
+.mobius-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.mobius-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(232, 240, 236, 0.18);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(240, 244, 239, 0.9);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  transition: border-color 180ms, background 180ms, color 180ms, transform 180ms, box-shadow 220ms;
+}
+
+.mobius-btn:hover {
+  border-color: rgba(201, 245, 106, 0.45);
+  background: rgba(201, 245, 106, 0.08);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.mobius-btn-solid {
+  border-color: transparent;
+  background: var(--hero-lime);
+  color: #0a1512;
+  font-weight: 600;
+  box-shadow: 0 8px 30px rgba(201, 245, 106, 0.22);
+}
+
+.mobius-btn-solid:hover {
+  background: #d9ff8f;
+  color: #0a1512;
+  box-shadow: 0 12px 38px rgba(201, 245, 106, 0.34);
+}
+
+.mobius-btn-ghost {
+  border-color: rgba(232, 240, 236, 0.1);
+  color: var(--hero-muted);
+}
+
+/* ---------- 注脚 ---------- */
+
+.mobius-note {
+  margin-top: 2.2rem;
+  max-width: 26rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid rgba(201, 245, 106, 0.35);
+  font-size: 0.74rem;
+  line-height: 1.9;
+  color: var(--hero-faint);
+}
+
+.mobius-note-k {
+  margin-right: 0.45rem;
+  font-family: var(--font-mono);
+  color: var(--hero-lime);
+}
+
+/* ---------- 滚动提示 ---------- */
+
+.mobius-scroll {
+  position: absolute;
+  right: 1.6rem;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.32em;
+  color: var(--hero-faint);
+}
+
+.mobius-scroll-bar {
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(to bottom, rgba(201, 245, 106, 0.8), transparent);
+  animation: mobius-scroll 2.4s ease-in-out infinite;
+}
+
+@keyframes mobius-scroll {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scaleY(0.5);
+    transform-origin: top;
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+/* ---------- 右侧玻璃面板 ---------- */
+
+.hero-panel {
+  position: relative;
+  border: 1px solid rgba(198, 240, 220, 0.16);
+  border-radius: 14px;
+  /* 不透明度够高，保证环体从后面掠过时文字依然清楚 */
+  background: linear-gradient(160deg, rgba(11, 24, 22, 0.94), rgba(5, 12, 11, 0.9));
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px) saturate(1.15);
+  overflow: hidden;
+}
+
+/* 四角准星 */
+.hero-panel::before,
+.hero-panel::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(201, 245, 106, 0.45);
+  pointer-events: none;
+}
+
+.hero-panel::before {
+  top: 8px;
+  left: 8px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.hero-panel::after {
+  right: 8px;
+  bottom: 8px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* ---------- 代码窗口 ---------- */
+
+.hero-term {
+  border-bottom: 1px solid rgba(198, 240, 220, 0.1);
+}
+
+.hero-term-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgba(198, 240, 220, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--hero-faint);
+}
+
+.hero-term-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.hero-term-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(232, 240, 236, 0.16);
+}
+
+.hero-term-dots i:first-child {
+  background: rgba(240, 118, 106, 0.6);
+}
+.hero-term-dots i:nth-child(2) {
+  background: rgba(240, 191, 106, 0.6);
+}
+.hero-term-dots i:nth-child(3) {
+  background: rgba(140, 220, 130, 0.55);
+}
+
+.hero-term-name {
+  color: rgba(226, 236, 232, 0.6);
+}
+
+.hero-term-lang {
+  margin-left: auto;
+  color: rgba(201, 245, 106, 0.7);
+}
+
+.hero-term-body {
+  margin: 0;
+  padding: 0.9rem 0.95rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.85;
+  color: rgba(226, 236, 232, 0.78);
+  overflow: hidden;
+}
+
+.hero-term-line {
+  display: block;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.hero-term-line.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-term-line.is-prompt {
+  color: rgba(201, 245, 106, 0.92);
+}
+
+.hero-term-prompt {
+  margin-right: 0.45rem;
+  color: var(--hero-lime);
+}
+
+.hero-term-caret {
+  display: inline-block;
+  width: 6px;
+  height: 0.85em;
+  margin-left: 1px;
+  vertical-align: -0.1em;
+  background: var(--hero-lime);
+  animation: caret-blink 1s steps(2, start) infinite;
+}
+
+@keyframes caret-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- 遥测 ---------- */
+
+.hero-panel-foot {
+  padding: 0.85rem 0.95rem 1rem;
+}
+
+.hero-telemetry-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(198, 240, 220, 0.09);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: rgba(226, 236, 232, 0.45);
+}
+
+.hero-telemetry-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--hero-cyan);
+  box-shadow: 0 0 8px rgba(98, 230, 207, 0.9);
+  animation: mobius-pulse 2s ease-in-out infinite;
+}
+
+.hero-telemetry dl {
+  margin: 0.55rem 0 0;
+  display: grid;
+  gap: 0.34rem;
+}
+
+.hero-telemetry-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+}
+
+.hero-telemetry-row dt {
+  color: rgba(226, 236, 232, 0.38);
+  text-transform: uppercase;
+}
+
+.hero-telemetry-row dd {
+  margin: 0;
+  color: rgba(201, 245, 106, 0.92);
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-telemetry-bar {
+  position: relative;
+  margin-top: 0.75rem;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(198, 240, 220, 0.1);
+  overflow: hidden;
+}
+
+.hero-telemetry-bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  background: linear-gradient(90deg, transparent, var(--hero-lime), var(--hero-cyan), transparent);
+  animation: telemetry-sweep 3.4s ease-in-out infinite;
+}
+
+@keyframes telemetry-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(360%);
+  }
+}
+
+/* ---------- 滚动字带 ---------- */
+
+.ticker {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-top: 1px solid rgba(198, 240, 220, 0.1);
+  border-bottom: 1px solid rgba(198, 240, 220, 0.1);
+  background: #040908;
+  padding: 0.62rem 0;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-run 42s linear infinite;
+}
+
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-run {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-group {
+  display: flex;
+  align-items: center;
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.4rem;
+  padding-right: 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.28em;
+  white-space: nowrap;
+  color: rgba(226, 236, 232, 0.4);
+}
+
+.ticker-item i {
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(201, 245, 106, 0.6);
+}
+
+/* 字带 → 正文的过渡带 */
+.hero-bridge {
+  height: 88px;
+  background: linear-gradient(to bottom, #040908 0%, var(--color-paper) 100%);
+}
+
+.dark .hero-bridge {
+  background: linear-gradient(to bottom, #040908 0%, var(--color-night) 100%);
+}
+
+/* ============================================================
+   正文区块
+   ============================================================ */
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.dark .section-head {
+  border-color: var(--color-night-line);
+}
+
+.section-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.dark .section-kicker {
+  color: var(--color-night-soft);
+}
+
+.section-kicker span {
+  color: var(--color-brand-500);
+}
+
+.dark .section-kicker span {
+  color: var(--color-brand-400);
+}
+
+.section-title {
+  margin: 0.42rem 0 0;
+  font-size: 1.32rem;
+  color: var(--color-ink);
+}
+
+.dark .section-title {
+  color: var(--color-night-ink);
+}
+
+.section-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-bottom: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: color 180ms, gap 180ms;
+}
+
+.section-more:hover {
+  gap: 0.55rem;
+  color: var(--color-brand-600);
+}
+
+.dark .section-more {
+  color: var(--color-night-soft);
+}
+
+.dark .section-more:hover {
+  color: var(--color-brand-400);
+}
+
+/* ---------- 数据条 ---------- */
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-paper-2);
+}
+
+.dark .stat-strip {
+  border-color: var(--color-night-line);
+  background: var(--color-night-2);
+}
+
+.stat-cell {
+  padding: 0.95rem 1rem;
+}
+
+.stat-cell + .stat-cell {
+  border-left: 1px solid var(--color-line);
+}
+
+.dark .stat-cell + .stat-cell {
+  border-color: var(--color-night-line);
+}
+
+.stat-cell dt {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.dark .stat-cell dt {
+  color: var(--color-night-soft);
+}
+
+.stat-cell dd {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0.35rem 0 0;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .stat-value {
+  color: var(--color-night-ink);
+}
+
+.stat-unit {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--color-ink-faint);
+}
+
+.dark .stat-unit {
+  color: var(--color-night-soft);
+}
+
+/* ---------- 文章列表 ---------- */
+
+.post-list {
+  margin-top: 0.5rem;
+}
+
+.post-row {
+  position: relative;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.dark .post-row {
+  border-color: var(--color-night-line);
+}
+
+.post-row::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--color-brand-500);
+  transform: translateY(-50%);
+  transition: height 260ms ease;
+}
+
+.post-row:hover::before {
+  height: 62%;
+}
+
+.post-row a {
+  display: block;
+  text-decoration: none;
+}
+
+.post-row-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.post-row-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.post-row-index {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--color-brand-500);
+  opacity: 0.7;
+}
+
+.dark .post-row-index {
+  color: var(--color-brand-400);
+}
+
+.post-row-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-ink);
+  transition: color 180ms;
+}
+
+.post-row:hover .post-row-heading {
+  color: var(--color-brand-600);
+}
+
+.dark .post-row-heading {
+  color: var(--color-night-ink);
+}
+
+.dark .post-row:hover .post-row-heading {
+  color: var(--color-brand-400);
+}
+
+.post-row-date {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-faint);
+}
+
+.dark .post-row-date {
+  color: var(--color-night-soft);
+}
+
+.post-row-summary {
+  margin: 0.55rem 0 0;
+  max-width: 34rem;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--color-ink-soft);
+}
+
+.dark .post-row-summary {
+  color: var(--color-night-soft);
+}
+
+.post-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-faint);
+}
+
+.dark .post-row-meta {
+  color: var(--color-night-soft);
+}
+
+.post-row-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+.post-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.post-row-tag {
+  color: var(--color-brand-600);
+  opacity: 0.8;
+}
+
+.dark .post-row-tag {
+  color: var(--color-brand-400);
+}
+
+.post-row-arrow {
+  display: inline-flex;
+  margin-left: auto;
+  color: var(--color-ink-faint);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 200ms, transform 200ms;
+}
+
+.post-row:hover .post-row-arrow {
+  opacity: 1;
+  transform: none;
+}
+
+.dark .post-row-arrow {
+  color: var(--color-night-soft);
+}
+
+/* ---------- 联系卡片 ---------- */
+
+.contact-card {
+  position: relative;
+  padding: 2rem 1.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, rgba(201, 245, 106, 0.05), transparent 42%),
+    var(--color-paper-2);
+  overflow: hidden;
+}
+
+.dark .contact-card {
+  border-color: var(--color-night-line);
+  background:
+    linear-gradient(135deg, rgba(201, 245, 106, 0.055), transparent 42%),
+    var(--color-night-2);
+}
+
+.contact-card::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 245, 106, 0.14);
+  pointer-events: none;
+}
+
+.contact-title {
+  margin: 0.6rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.dark .contact-title {
+  color: var(--color-night-ink);
+}
+
+.contact-lede {
+  margin: 0.7rem 0 0;
+  max-width: 26rem;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--color-ink-soft);
+}
+
+.dark .contact-lede {
+  color: var(--color-night-soft);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.4rem;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  transition: border-color 180ms, color 180ms, background 180ms, transform 180ms;
+}
+
+.contact-link:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-600);
+  background: rgba(201, 245, 106, 0.06);
+  transform: translateY(-1px);
+}
+
+.dark .contact-link {
+  border-color: var(--color-night-line);
+  color: var(--color-night-soft);
+}
+
+.dark .contact-link:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-400);
+}
+
+/* ---------- 滚动淡入（CSS 滚动驱动，无 JS） ---------- */
+
+/*
+ * 默认就是「已显示」状态：不支持 animation-timeline 的浏览器不会白屏。
+ * 支持时由 view() 进度驱动，元素进入视口才淡入上移。
+ */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 26%;
+      animation-delay: var(--reveal-delay, 0ms);
+    }
+
+    @keyframes reveal-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+}
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 1024px) {
+  .hero-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-shell {
+    min-height: max(620px, calc(100svh - 4rem));
+  }
+
+  /* 窄屏：画布只占下半屏 */
+  .hero-canvas {
+    top: 30%;
+  }
+
+  .hero-veil {
+    background: linear-gradient(
+      to bottom,
+      var(--hero-bg) 0%,
+      rgba(5, 11, 10, 0.62) 16%,
+      rgba(5, 11, 10, 0.1) 38%,
+      rgba(5, 11, 10, 0.06) 64%,
+      rgba(5, 11, 10, 0.58) 88%,
+      var(--hero-bg) 100%
+    );
+  }
+
+  .hero-veil-bottom {
+    display: none;
+  }
+
+  .hero-grid {
+    background-size: 42px 42px;
+  }
+
+  .stat-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-cell:nth-child(3) {
+    border-left: 0;
+  }
+
+  .stat-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .dark .stat-cell:nth-child(n + 3) {
+    border-color: var(--color-night-line);
+  }
+
+  .contact-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .mobius-note,
+  .mobius-scroll {
+    display: none;
+  }
+
+  .mobius-title {
+    font-size: 1.9rem;
+  }
+
+  .mobius-eyebrow {
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+  }
+
+  .mobius-eyebrow-sep {
+    display: none;
+  }
+
+  .post-row {
+    padding: 1.25rem 0;
+  }
+
+  .post-row-heading {
+    font-size: 1.05rem;
+  }
+
+  .post-row-arrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobius-dot,
+  .mobius-scroll-bar,
+  .hero-scan,
+  .hero-stars,
+  .hero-telemetry-bar span,
+  .ticker-track,
+  .hero-term-caret,
+  .hero-telemetry-dot {
+    animation: none;
+  }
+}

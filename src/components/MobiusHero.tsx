@@ -1,4 +1,4 @@
-// src/components/MobiusHero.tsx — 首页主视觉：全幅莫比乌斯环背景
+// src/components/MobiusHero.tsx — 首页主视觉：全幅莫比乌斯环背景 + 科技感叠加层
 import { useEffect, useRef, useState } from 'react'
 import { createMobius } from '../lib/mobiusGl'
 
@@ -19,6 +19,8 @@ export interface MobiusHeroProps {
   veil?: HeroVeil
   /** 是否跟随指针做轻微视差 */
   parallax?: boolean
+  /** 是否显示网格 / 扫描线 / 光斑等装饰层 */
+  fx?: boolean
 }
 
 export function MobiusHero({
@@ -29,8 +31,10 @@ export function MobiusHero({
   speed = 0.15,
   veil = 'split',
   parallax = true,
+  fx = true,
 }: MobiusHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
   const [failed, setFailed] = useState(false)
 
@@ -43,9 +47,9 @@ export function MobiusHero({
     const instance = createMobius(canvas, {
       twist: 1,
       width,
-      offsetX: offsetX ?? (wide ? 1.65 : 0),
-      offsetY: offsetY ?? (wide ? 0.05 : 0),
-      heightRatio: heightRatio ?? (wide ? 0.98 : 0.86),
+      offsetX: offsetX ?? (wide ? 1.62 : 0),
+      offsetY: offsetY ?? (wide ? 0.02 : 0),
+      heightRatio: heightRatio ?? (wide ? 1.16 : 0.86),
       speed,
     })
 
@@ -60,10 +64,17 @@ export function MobiusHero({
     let running = true
 
     const onPointer = (event: PointerEvent) => {
-      if (reduceMotion || !parallax) return
       const x = (event.clientX / window.innerWidth) * 2 - 1
       const y = (event.clientY / window.innerHeight) * 2 - 1
-      instance.setPointer(x, y)
+
+      if (parallax && !reduceMotion) instance.setPointer(x, y)
+
+      // 聚光跟随指针：只写 CSS 变量，不触发重渲染
+      const root = rootRef.current
+      if (root && fx && !reduceMotion) {
+        root.style.setProperty('--mx', `${((x + 1) / 2) * 100}%`)
+        root.style.setProperty('--my', `${((y + 1) / 2) * 100}%`)
+      }
     }
 
     const loop = (now: number) => {
@@ -132,7 +143,11 @@ export function MobiusHero({
   }, [])
 
   return (
-    <div className="hero-canvas pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div
+      ref={rootRef}
+      className="hero-canvas pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden="true"
+    >
       <canvas
         ref={canvasRef}
         className={`h-full w-full transition-opacity duration-1000 ${
@@ -161,8 +176,21 @@ export function MobiusHero({
         </>
       )}
 
+      {fx && (
+        <>
+          {/* 工程网格 */}
+          <div className="hero-grid absolute inset-0" />
+          {/* 星点 */}
+          <div className="hero-stars absolute inset-0" />
+          {/* 扫描线 */}
+          <div className="hero-scan absolute inset-x-0" />
+          {/* 指针聚光 */}
+          <div className="hero-spot absolute inset-0" />
+        </>
+      )}
+
       {failed && (
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,#0d2b28_0%,#07100f_62%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,#0d2b28_0%,#050b0a_62%)]" />
       )}
     </div>
   )
