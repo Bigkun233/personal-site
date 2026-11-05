@@ -9,6 +9,7 @@ import { MobiusHero } from '../components/MobiusHero'
 import { HeroTelemetry } from '../components/HeroTelemetry'
 import { HeroTerminal } from '../components/HeroTerminal'
 import { Reveal } from '../components/Reveal'
+import { IntroGate } from '../components/IntroGate'
 
 const TICKER = [
   'WEBGL',
@@ -38,6 +39,9 @@ export function Home() {
 
   return (
     <div>
+      {/* 进入首页时的开场动画（每个会话只播一次） */}
+      <IntroGate />
+
       {/* ================= 主视觉 ================= */}
       <section className="hero-shell relative left-1/2 -mt-14 mb-0 flex w-screen -translate-x-1/2 items-center overflow-hidden px-5">
         <MobiusHero />

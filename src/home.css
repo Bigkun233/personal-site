@@ -1,5 +1,5 @@
 /* ============================================================
-   首页主视觉：莫比乌斯环 + 科技感 HUD
+   棣栭〉涓昏瑙夛細鑾瘮涔屾柉鐜?+ 绉戞妧鎰?HUD
    ============================================================ */
 
 :root {
@@ -19,7 +19,7 @@
   isolation: isolate;
 }
 
-/* 主视觉底部的「接缝」高光线：把深色区与页面正文区利落地切开 */
+/* 主视觉底部的接缝高光线：把深色区与页面正文区利落地切开 */
 .hero-shell::after {
   content: '';
   position: absolute;
@@ -39,7 +39,7 @@
 
 /* ---------- 背景层 ---------- */
 
-/* 工程网格 */
+/* 宸ョ▼缃戞牸 */
 .hero-grid {
   background-image:
     linear-gradient(to right, rgba(160, 230, 205, 0.055) 1px, transparent 1px),
@@ -67,7 +67,7 @@
   }
 }
 
-/* 扫描线 */
+/* 鎵弿绾?*/
 .hero-scan {
   top: -30%;
   height: 30%;
@@ -99,7 +99,7 @@
   }
 }
 
-/* 指针聚光 */
+/* 鎸囬拡鑱氬厜 */
 .hero-spot {
   background: radial-gradient(
     420px circle at var(--mx, 62%) var(--my, 48%),
@@ -109,7 +109,7 @@
   transition: background 120ms linear;
 }
 
-/* 底部渐隐 */
+/* 搴曢儴娓愰殣 */
 .hero-veil-bottom {
   background: linear-gradient(to top, var(--hero-bg) 2%, transparent 100%);
 }
@@ -148,7 +148,7 @@
   );
 }
 
-/* ---------- 文字 ---------- */
+/* ---------- 鏂囧瓧 ---------- */
 
 .mobius-eyebrow {
   display: flex;
@@ -216,7 +216,7 @@
   color: var(--hero-muted);
 }
 
-/* ---------- 按钮 ---------- */
+/* ---------- 鎸夐挳 ---------- */
 
 .mobius-actions {
   display: flex;
@@ -269,7 +269,7 @@
   color: var(--hero-muted);
 }
 
-/* ---------- 注脚 ---------- */
+/* ---------- 娉ㄨ剼 ---------- */
 
 .mobius-note {
   margin-top: 2.2rem;
@@ -287,7 +287,7 @@
   color: var(--hero-lime);
 }
 
-/* ---------- 滚动提示 ---------- */
+/* ---------- 婊氬姩鎻愮ず ---------- */
 
 .mobius-scroll {
   position: absolute;
@@ -324,13 +324,13 @@
   }
 }
 
-/* ---------- 右侧玻璃面板 ---------- */
+/* ---------- 鍙充晶鐜荤拑闈㈡澘 ---------- */
 
 .hero-panel {
   position: relative;
   border: 1px solid rgba(198, 240, 220, 0.16);
   border-radius: 14px;
-  /* 不透明度够高，保证环体从后面掠过时文字依然清楚 */
+  /* 涓嶉€忔槑搴﹀楂橈紝淇濊瘉鐜綋浠庡悗闈㈡帬杩囨椂鏂囧瓧渚濈劧娓呮 */
   background: linear-gradient(160deg, rgba(11, 24, 22, 0.94), rgba(5, 12, 11, 0.9));
   box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.6),
@@ -339,7 +339,7 @@
   overflow: hidden;
 }
 
-/* 四角准星 */
+/* 鍥涜鍑嗘槦 */
 .hero-panel::before,
 .hero-panel::after {
   content: '';
@@ -364,7 +364,7 @@
   border-top: 0;
 }
 
-/* ---------- 代码窗口 ---------- */
+/* ---------- 浠ｇ爜绐楀彛 ---------- */
 
 .hero-term {
   border-bottom: 1px solid rgba(198, 240, 220, 0.1);
@@ -461,7 +461,7 @@
   }
 }
 
-/* ---------- 遥测 ---------- */
+/* ---------- 閬ユ祴 ---------- */
 
 .hero-panel-foot {
   padding: 0.85rem 0.95rem 1rem;
@@ -541,7 +541,7 @@
   }
 }
 
-/* ---------- 滚动字带 ---------- */
+/* ---------- 婊氬姩瀛楀甫 ---------- */
 
 .ticker {
   position: relative;
@@ -606,7 +606,7 @@
 }
 
 /* ============================================================
-   正文区块
+   姝ｆ枃鍖哄潡
    ============================================================ */
 
 .section-head {
@@ -683,7 +683,7 @@
   color: var(--color-brand-400);
 }
 
-/* ---------- 数据条 ---------- */
+/* ---------- 鏁版嵁鏉?---------- */
 
 .stat-strip {
   display: grid;
@@ -754,7 +754,7 @@
   color: var(--color-night-soft);
 }
 
-/* ---------- 文章列表 ---------- */
+/* ---------- 鏂囩珷鍒楄〃 ---------- */
 
 .post-list {
   margin-top: 0.5rem;
@@ -922,7 +922,7 @@
   color: var(--color-night-soft);
 }
 
-/* ---------- 联系卡片 ---------- */
+/* ---------- 鑱旂郴鍗＄墖 ---------- */
 
 .contact-card {
   position: relative;
@@ -1152,5 +1152,345 @@
   .hero-term-caret,
   .hero-telemetry-dot {
     animation: none;
+  }
+}
+
+/* ============================================================
+   Intro overlay (first visit of a session)
+   ============================================================ */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  background: #040908;
+  color: #eef4f0;
+  isolation: isolate;
+}
+
+.intro-panel {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50.2%;
+  background:
+    radial-gradient(ellipse 70% 90% at 50% 100%, rgba(20, 60, 54, 0.34), transparent 70%),
+    #040908;
+  transition: transform 900ms cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+
+.intro-panel-top {
+  top: 0;
+}
+
+.intro-panel-bottom {
+  bottom: 0;
+  transform: scaleY(-1);
+}
+
+.intro.is-leaving .intro-panel-top {
+  transform: translateY(-100%);
+}
+
+.intro.is-leaving .intro-panel-bottom {
+  transform: scaleY(-1) translateY(-100%);
+}
+
+/* thin seam between the two panels */
+.intro-seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 245, 106, 0.3) 20%,
+    rgba(98, 230, 207, 0.5) 50%,
+    rgba(201, 245, 106, 0.3) 80%,
+    transparent
+  );
+  box-shadow: 0 0 16px rgba(98, 230, 207, 0.18);
+  opacity: 0.45;
+  /* 中间留空，避免高光线从标题和介绍文字中间穿过 */
+  mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%);
+  transition: opacity 400ms ease;
+  z-index: 1;
+}
+
+.intro.is-leaving .intro-seam {
+  opacity: 0;
+}
+
+/* background grid + halo */
+.intro-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(to right, rgba(160, 230, 205, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(160, 230, 205, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 10%, transparent 75%);
+  opacity: 0.8;
+}
+
+.intro-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(54vw, 620px);
+  height: min(54vw, 620px);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background: radial-gradient(circle, rgba(40, 120, 105, 0.16), transparent 62%);
+  filter: blur(10px);
+  animation: intro-breathe 5s ease-in-out infinite;
+}
+
+@keyframes intro-breathe {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
+/* content layer */
+.intro-content {
+  position: relative;
+  z-index: 4;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: opacity 420ms ease, transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intro.is-leaving .intro-content {
+  opacity: 0;
+  transform: translateY(-26px) scale(0.985);
+}
+
+.intro-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.34em;
+  color: rgba(226, 236, 232, 0.44);
+  opacity: 0;
+  animation: intro-fade-up 700ms 120ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.intro-kicker-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #c9f56a;
+  box-shadow: 0 0 12px rgba(201, 245, 106, 0.9);
+  animation: intro-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes intro-blink {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.intro-name {
+  display: flex;
+  align-items: baseline;
+  margin: 1.1rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 11vw, 7rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: #f4f8f2;
+}
+
+.intro-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.42em) rotate(3deg);
+  filter: blur(6px);
+  animation: intro-char-in 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(180ms + var(--i) * 62ms);
+}
+
+@keyframes intro-char-in {
+  0% {
+    opacity: 0;
+    transform: translateY(0.42em) rotate(3deg);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.intro-cursor {
+  display: inline-block;
+  width: 0.09em;
+  height: 0.78em;
+  margin-left: 0.12em;
+  background: #c9f56a;
+  box-shadow: 0 0 18px rgba(201, 245, 106, 0.7);
+  animation: intro-caret 1.05s steps(2, start) infinite;
+  opacity: 0;
+  animation-delay: 720ms;
+  animation-fill-mode: both;
+}
+
+@keyframes intro-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.intro-role {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: rgba(201, 245, 106, 0.78);
+  opacity: 0;
+  animation: intro-fade-up 700ms 680ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.intro-lede {
+  margin: 1.35rem 0 0;
+  max-width: 26rem;
+  font-size: 0.94rem;
+  line-height: 2;
+  color: rgba(226, 236, 232, 0.62);
+  opacity: 0;
+  animation: intro-fade-up 760ms 800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes intro-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.intro-progress {
+  width: min(300px, 62vw);
+  margin-top: 2.4rem;
+  opacity: 0;
+  animation: intro-fade-up 700ms 940ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.intro-progress-track {
+  position: relative;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(198, 240, 220, 0.12);
+  overflow: hidden;
+}
+
+.intro-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c9f56a, #62e6cf);
+  box-shadow: 0 0 16px rgba(98, 230, 207, 0.55);
+  transition: width 90ms linear;
+}
+
+.intro-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.26em;
+  color: rgba(226, 236, 232, 0.4);
+}
+
+.intro-progress-num {
+  color: rgba(201, 245, 106, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.intro-skip {
+  margin: 1.5rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  color: rgba(226, 236, 232, 0.26);
+  opacity: 0;
+  animation: intro-fade-up 700ms 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+@media (max-width: 640px) {
+  .intro-name {
+    font-size: clamp(3rem, 18vw, 4.4rem);
+  }
+  .intro-lede {
+    font-size: 0.86rem;
+    line-height: 1.9;
+  }
+  .intro-progress {
+    margin-top: 1.9rem;
+  }
+  .intro-grid {
+    background-size: 38px 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .intro-content,
+  .intro-panel,
+  .intro-seam {
+    transition: none;
+  }
+  .intro-kicker,
+  .intro-role,
+  .intro-lede,
+  .intro-progress,
+  .intro-skip,
+  .intro-char,
+  .intro-cursor,
+  .intro-glow,
+  .intro-kicker-dot {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
