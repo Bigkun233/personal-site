@@ -13,7 +13,8 @@ const NAME = 'Bigkun'
 
 const DURATION = 1900
 const HOLD = 260
-const LEAVE = 860
+/** 撕幕 + 主视觉淡入的总时长，退场结束后再卸载遮罩 */
+const LEAVE = 1180
 
 export function IntroGate() {
   const [active] = useState(() => {
@@ -80,6 +81,26 @@ export function IntroGate() {
       root.style.overflow = prev
     }
   }, [active, gone])
+
+  // 给 <html> 打标记，让主视觉跟着开场动画一起淡入
+  useEffect(() => {
+    if (!active) return
+    const root = document.documentElement
+    root.classList.add('intro-active')
+    return () => {
+      root.classList.remove('intro-active', 'intro-leaving')
+    }
+  }, [active])
+
+  useEffect(() => {
+    if (!active) return
+    const root = document.documentElement
+    if (gone) {
+      root.classList.remove('intro-active', 'intro-leaving')
+      return
+    }
+    root.classList.toggle('intro-leaving', leaving)
+  }, [active, leaving, gone])
 
   // 点击 / 按键跳过
   useEffect(() => {

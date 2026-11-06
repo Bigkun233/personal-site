@@ -34,7 +34,7 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-md dark:border-night-line dark:bg-night/85">
+      <header className="site-header sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-md dark:border-night-line dark:bg-night/85">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-5">
           <Link to="/" className="group flex items-baseline gap-2">
             <span className="font-display text-xl font-semibold text-ink dark:text-night-ink">
