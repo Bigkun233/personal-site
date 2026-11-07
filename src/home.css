@@ -1,5 +1,5 @@
-/* ============================================================
-   棣栭〉涓昏瑙夛細鑾瘮涔屾柉鐜?+ 绉戞妧鎰?HUD
+﻿/* ============================================================
+   妫ｆ牠銆夋稉鏄忣潒鐟欏绱伴懢顐ｇ槷娑斿本鏌夐悳?+ 缁夋垶濡ч幇?HUD
    ============================================================ */
 
 :root {
@@ -19,7 +19,7 @@
   isolation: isolate;
 }
 
-/* 主视觉底部的接缝高光线：把深色区与页面正文区利落地切开 */
+/* 涓昏瑙夊簳閮ㄧ殑鎺ョ紳楂樺厜绾匡細鎶婃繁鑹插尯涓庨〉闈㈡鏂囧尯鍒╄惤鍦板垏寮€ */
 .hero-shell::after {
   content: '';
   position: absolute;
@@ -37,12 +37,12 @@
   z-index: 5;
 }
 
-/* ---------- 主视觉与开场动画的衔接 ---------- */
+/* ---------- 涓昏瑙変笌寮€鍦哄姩鐢荤殑琛旀帴 ---------- */
 
-/* 开场期间主视觉先藏起来，等幕布开始撕开时再一起浮上来 */
+/* 寮€鍦烘湡闂翠富瑙嗚鍏堣棌璧锋潵锛岀瓑骞曞竷寮€濮嬫挄寮€鏃跺啀涓€璧锋诞涓婃潵 */
 html.intro-active .hero-shell {
   opacity: 0;
-  /* 用 scale 而不是 transform，避免覆盖 w-screen 居中用的 translate */
+  /* 鐢?scale 鑰屼笉鏄?transform锛岄伩鍏嶈鐩?w-screen 灞呬腑鐢ㄧ殑 translate */
   scale: 1.05;
   filter: blur(5px);
 }
@@ -68,7 +68,7 @@ html.intro-leaving .hero-shell {
   }
 }
 
-/* 文案与右侧面板错落浮现，避免整块一起蹦出来 */
+/* 鏂囨涓庡彸渚ч潰鏉块敊钀芥诞鐜帮紝閬垮厤鏁村潡涓€璧疯功鍑烘潵 */
 html.intro-leaving .hero-shell .mobius-eyebrow,
 html.intro-leaving .hero-shell .mobius-title,
 html.intro-leaving .hero-shell .mobius-lede,
@@ -108,7 +108,7 @@ html.intro-leaving .hero-shell .hero-panel {
   }
 }
 
-/* 顶部导航跟着一起落位，避免幕布一开就“啪”地出现 */
+/* 椤堕儴瀵艰埅璺熺潃涓€璧疯惤浣嶏紝閬垮厤骞曞竷涓€寮€灏扁€滃暘鈥濆湴鍑虹幇 */
 html.intro-active .site-header {
   opacity: 0;
   translate: 0 -10px;
@@ -129,7 +129,7 @@ html.intro-leaving .site-header {
   }
 }
 
-/* 主视觉之后的内容（字带、数据、文章、作品、联系）整体延后渐入 */
+/* 涓昏瑙変箣鍚庣殑鍐呭锛堝瓧甯︺€佹暟鎹€佹枃绔犮€佷綔鍝併€佽仈绯伙級鏁翠綋寤跺悗娓愬叆 */
 html.intro-active .page-reveal {
   opacity: 0;
   translate: 0 28px;
@@ -150,9 +150,9 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* ---------- 背景层 ---------- */
+/* ---------- 鑳屾櫙灞?---------- */
 
-/* 宸ョ▼缃戞牸 */
+/* 瀹搞儳鈻肩純鎴炵壐 */
 .hero-grid {
   background-image:
     linear-gradient(to right, rgba(160, 230, 205, 0.055) 1px, transparent 1px),
@@ -163,7 +163,7 @@ html.intro-leaving .page-reveal {
   opacity: 0.9;
 }
 
-/* 星点：两层错位，制造纵深 */
+/* 鏄熺偣锛氫袱灞傞敊浣嶏紝鍒堕€犵旱娣?*/
 .hero-stars {
   background-image:
     radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.8px, transparent 0.9px),
@@ -180,7 +180,7 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* 鎵弿绾?*/
+/* 閹殿偅寮跨痪?*/
 .hero-scan {
   top: -30%;
   height: 30%;
@@ -212,7 +212,7 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* 鎸囬拡鑱氬厜 */
+/* 閹稿洭鎷￠懕姘帨 */
 .hero-spot {
   background: radial-gradient(
     420px circle at var(--mx, 62%) var(--my, 48%),
@@ -222,12 +222,12 @@ html.intro-leaving .page-reveal {
   transition: background 120ms linear;
 }
 
-/* 搴曢儴娓愰殣 */
+/* 鎼存洟鍎村〒鎰版 */
 .hero-veil-bottom {
   background: linear-gradient(to top, var(--hero-bg) 2%, transparent 100%);
 }
 
-/* 左侧压暗（桌面） */
+/* 宸︿晶鍘嬫殫锛堟闈級 */
 .hero-veil {
   background: linear-gradient(
     100deg,
@@ -261,7 +261,7 @@ html.intro-leaving .page-reveal {
   );
 }
 
-/* ---------- 鏂囧瓧 ---------- */
+/* ---------- 閺傚洤鐡?---------- */
 
 .mobius-eyebrow {
   display: flex;
@@ -329,7 +329,7 @@ html.intro-leaving .page-reveal {
   color: var(--hero-muted);
 }
 
-/* ---------- 鎸夐挳 ---------- */
+/* ---------- 閹稿鎸?---------- */
 
 .mobius-actions {
   display: flex;
@@ -382,7 +382,7 @@ html.intro-leaving .page-reveal {
   color: var(--hero-muted);
 }
 
-/* ---------- 娉ㄨ剼 ---------- */
+/* ---------- 濞夈劏鍓?---------- */
 
 .mobius-note {
   margin-top: 2.2rem;
@@ -400,7 +400,7 @@ html.intro-leaving .page-reveal {
   color: var(--hero-lime);
 }
 
-/* ---------- 婊氬姩鎻愮ず ---------- */
+/* ---------- 濠婃艾濮╅幓鎰仛 ---------- */
 
 .mobius-scroll {
   position: absolute;
@@ -437,13 +437,13 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* ---------- 鍙充晶鐜荤拑闈㈡澘 ---------- */
+/* ---------- 閸欏厖鏅堕悳鑽ゆ嫅闂堛垺婢?---------- */
 
 .hero-panel {
   position: relative;
   border: 1px solid rgba(198, 240, 220, 0.16);
   border-radius: 14px;
-  /* 涓嶉€忔槑搴﹀楂橈紝淇濊瘉鐜綋浠庡悗闈㈡帬杩囨椂鏂囧瓧渚濈劧娓呮 */
+  /* 娑撳秹鈧繑妲戞惔锕€顧勬姗堢礉娣囨繆鐦夐悳顖欑秼娴犲骸鎮楅棃銏″脯鏉╁洦妞傞弬鍥х摟娓氭繄鍔у〒鍛殶 */
   background: linear-gradient(160deg, rgba(11, 24, 22, 0.94), rgba(5, 12, 11, 0.9));
   box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.6),
@@ -452,7 +452,7 @@ html.intro-leaving .page-reveal {
   overflow: hidden;
 }
 
-/* 鍥涜鍑嗘槦 */
+/* 閸ユ稖顫楅崙鍡樻Е */
 .hero-panel::before,
 .hero-panel::after {
   content: '';
@@ -477,7 +477,7 @@ html.intro-leaving .page-reveal {
   border-top: 0;
 }
 
-/* ---------- 浠ｇ爜绐楀彛 ---------- */
+/* ---------- 娴狅絿鐖滅粣妤€褰?---------- */
 
 .hero-term {
   border-bottom: 1px solid rgba(198, 240, 220, 0.1);
@@ -574,7 +574,7 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* ---------- 閬ユ祴 ---------- */
+/* ---------- 闁儲绁?---------- */
 
 .hero-panel-foot {
   padding: 0.85rem 0.95rem 1rem;
@@ -654,7 +654,7 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* ---------- 婊氬姩瀛楀甫 ---------- */
+/* ---------- 濠婃艾濮╃€涙鐢?---------- */
 
 .ticker {
   position: relative;
@@ -708,7 +708,7 @@ html.intro-leaving .page-reveal {
   background: rgba(201, 245, 106, 0.6);
 }
 
-/* 字带 → 正文的过渡带 */
+/* 瀛楀甫 鈫?姝ｆ枃鐨勮繃娓″甫 */
 .hero-bridge {
   height: 88px;
   background: linear-gradient(to bottom, #040908 0%, var(--color-paper) 100%);
@@ -719,7 +719,7 @@ html.intro-leaving .page-reveal {
 }
 
 /* ============================================================
-   姝ｆ枃鍖哄潡
+   濮濓絾鏋冮崠鍝勬健
    ============================================================ */
 
 .section-head {
@@ -796,7 +796,7 @@ html.intro-leaving .page-reveal {
   color: var(--color-brand-400);
 }
 
-/* ---------- 鏁版嵁鏉?---------- */
+/* ---------- 閺佺増宓侀弶?---------- */
 
 .stat-strip {
   display: grid;
@@ -867,7 +867,7 @@ html.intro-leaving .page-reveal {
   color: var(--color-night-soft);
 }
 
-/* ---------- 鏂囩珷鍒楄〃 ---------- */
+/* ---------- 閺傚洨鐝烽崚妤勩€?---------- */
 
 .post-list {
   margin-top: 0.5rem;
@@ -1035,7 +1035,7 @@ html.intro-leaving .page-reveal {
   color: var(--color-night-soft);
 }
 
-/* ---------- 鑱旂郴鍗＄墖 ---------- */
+/* ---------- 閼辨梻閮撮崡锛勫 ---------- */
 
 .contact-card {
   position: relative;
@@ -1131,12 +1131,10 @@ html.intro-leaving .page-reveal {
   color: var(--color-brand-400);
 }
 
-/* ---------- 滚动淡入（CSS 滚动驱动，无 JS） ---------- */
+/* ---------- 婊氬姩娣″叆锛圕SS 婊氬姩椹卞姩锛屾棤 JS锛?---------- */
 
 /*
- * 默认就是「已显示」状态：不支持 animation-timeline 的浏览器不会白屏。
- * 支持时由 view() 进度驱动，元素进入视口才淡入上移。
- */
+ * 榛樿灏辨槸銆屽凡鏄剧ず銆嶇姸鎬侊細涓嶆敮鎸?animation-timeline 鐨勬祻瑙堝櫒涓嶄細鐧藉睆銆? * 鏀寔鏃剁敱 view() 杩涘害椹卞姩锛屽厓绱犺繘鍏ヨ鍙ｆ墠娣″叆涓婄Щ銆? */
 .reveal {
   opacity: 1;
   transform: none;
@@ -1164,7 +1162,7 @@ html.intro-leaving .page-reveal {
   }
 }
 
-/* ---------- 响应式 ---------- */
+/* ---------- 鍝嶅簲寮?---------- */
 
 @media (max-width: 1024px) {
   .hero-panel {
@@ -1177,7 +1175,7 @@ html.intro-leaving .page-reveal {
     min-height: max(620px, calc(100svh - 4rem));
   }
 
-  /* 窄屏：画布只占下半屏 */
+  /* 绐勫睆锛氱敾甯冨彧鍗犱笅鍗婂睆 */
   .hero-canvas {
     top: 30%;
   }
@@ -1280,7 +1278,7 @@ html.intro-leaving .page-reveal {
   background: #040908;
   color: #eef4f0;
   isolation: isolate;
-  /* 退场时整体溶解，避免幕布、网格、光晕留下残影 */
+  /* 閫€鍦烘椂鏁翠綋婧惰В锛岄伩鍏嶅箷甯冦€佺綉鏍笺€佸厜鏅曠暀涓嬫畫褰?*/
   transition: opacity 900ms ease 180ms;
 }
 
@@ -1335,7 +1333,7 @@ html.intro-leaving .page-reveal {
   );
   box-shadow: 0 0 16px rgba(98, 230, 207, 0.18);
   opacity: 0.45;
-  /* 中间留空，避免高光线从标题和介绍文字中间穿过 */
+  /* 涓棿鐣欑┖锛岄伩鍏嶉珮鍏夌嚎浠庢爣棰樺拰浠嬬粛鏂囧瓧涓棿绌胯繃 */
   mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%);
   -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%);
   transition: opacity 400ms ease;
@@ -1448,9 +1446,11 @@ html.intro-leaving .page-reveal {
   font-family: var(--font-display);
   font-size: clamp(3.2rem, 11vw, 7rem);
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.06;
   letter-spacing: -0.035em;
   color: #f4f8f2;
+  /* g 鐨勪笅浼搁儴浼氭孩鍑?line box锛岀暀鍑虹┖闂撮伩鍏嶅帇鍒颁笅闈㈢殑瑙掕壊琛?*/
+  padding-bottom: 0.14em;
 }
 
 .intro-char {
@@ -1503,7 +1503,7 @@ html.intro-leaving .page-reveal {
 }
 
 .intro-role {
-  margin: 0.55rem 0 0;
+  margin: 1.15rem 0 0;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
@@ -1513,7 +1513,7 @@ html.intro-leaving .page-reveal {
 }
 
 .intro-lede {
-  margin: 1.35rem 0 0;
+  margin: 1.55rem 0 0;
   max-width: 26rem;
   font-size: 0.94rem;
   line-height: 2;
@@ -1618,3 +1618,4 @@ html.intro-leaving .page-reveal {
     filter: none;
   }
 }
+
