@@ -116,8 +116,10 @@ export function Home() {
         </div>
       </section>
 
-      {/* ================= 滚动字带（全幅出血） ================= */}
-      <div className="ticker relative left-1/2 w-screen -translate-x-1/2" aria-hidden="true">
+      {/* 主视觉之后的所有内容：随开场动画一起渐入 */}
+      <div className="page-reveal">
+        {/* ================= 滚动字带（全幅出血） ================= */}
+        <div className="ticker relative left-1/2 w-screen -translate-x-1/2" aria-hidden="true">
         <div className="ticker-track">
           {[0, 1].map((copy) => (
             <div className="ticker-group" key={copy}>
@@ -251,6 +253,7 @@ export function Home() {
             </div>
           </div>
         </Reveal>
+        </div>
       </div>
     </div>
   )

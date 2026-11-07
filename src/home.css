@@ -48,7 +48,7 @@ html.intro-active .hero-shell {
 }
 
 html.intro-leaving .hero-shell {
-  animation: hero-reveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: hero-reveal 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes hero-reveal {
@@ -122,6 +122,27 @@ html.intro-leaving .site-header {
   from {
     opacity: 0;
     translate: 0 -10px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* 主视觉之后的内容（字带、数据、文章、作品、联系）整体延后渐入 */
+html.intro-active .page-reveal {
+  opacity: 0;
+  translate: 0 28px;
+}
+
+html.intro-leaving .page-reveal {
+  animation: page-in 1000ms 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    translate: 0 28px;
   }
   to {
     opacity: 1;
@@ -1259,6 +1280,12 @@ html.intro-leaving .site-header {
   background: #040908;
   color: #eef4f0;
   isolation: isolate;
+  /* 退场时整体溶解，避免幕布、网格、光晕留下残影 */
+  transition: opacity 900ms ease 180ms;
+}
+
+.intro.is-leaving {
+  opacity: 0;
 }
 
 .intro-panel {
@@ -1269,8 +1296,9 @@ html.intro-leaving .site-header {
   background:
     radial-gradient(ellipse 70% 90% at 50% 100%, rgba(20, 60, 54, 0.34), transparent 70%),
     #040908;
-  transition: transform 1020ms cubic-bezier(0.65, 0, 0.35, 1);
-  will-change: transform;
+  transition:
+    transform 1020ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform, opacity;
 }
 
 .intro-panel-top {

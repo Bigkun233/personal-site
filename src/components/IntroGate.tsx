@@ -13,8 +13,8 @@ const NAME = 'Bigkun'
 
 const DURATION = 1900
 const HOLD = 260
-/** 撕幕 + 主视觉淡入的总时长，退场结束后再卸载遮罩 */
-const LEAVE = 1180
+/** 撕幕 + 主视觉/正文淡入的总时长，退场结束后再卸载遮罩 */
+const LEAVE = 1360
 
 export function IntroGate() {
   const [active] = useState(() => {
